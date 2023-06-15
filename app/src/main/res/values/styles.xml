@@ -5,11 +5,13 @@
         <item name="android:textSize">36sp</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/ibm_medium</item>
     </style>
 
     <style name="headline3">
         <item name="android:textSize">20sp</item>
         <item name="android:letterSpacing">0.01</item>
         <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/ibm_medium</item>
     </style>
 </resources>
