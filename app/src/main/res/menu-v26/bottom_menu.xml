@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/homeFragment"
+        android:icon="@drawable/home"
+        android:tint="@color/white"
+        android:orderInCategory="1"
+        android:title="@string/home" />
+    <item android:id="@+id/analyticsFragment"
+        android:icon="@drawable/analytics"
+        android:tint="@color/white"
+        android:orderInCategory="2"
+        android:title="@string/analytics" />
+    <item android:id="@+id/notificationsFragment"
+        android:icon="@drawable/notification"
+        android:tint="@color/white"
+        android:orderInCategory="3"
+        android:title="@string/notifications" />
+</menu>

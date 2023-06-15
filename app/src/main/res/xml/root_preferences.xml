@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="General">
+        <SwitchPreferenceCompat
+            android:key="notifications"
+            android:title="Notifications"
+            android:summary="Enable or disable notifications" />
+        <EditTextPreference
+            android:key="username"
+            android:title="Username"
+            android:summary="Enter your username"
+            android:defaultValue="user" />
+        <ListPreference
+            android:key="currency"
+            android:title="Currency"
+            android:summary="Select your preferred currency"
+            android:entries="@array/currency_names"
+            android:entryValues="@array/currency_codes"
+            android:defaultValue="USD" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Appearance">
+        <ListPreference
+            android:key="theme"
+            android:title="Theme"
+            android:summary="Choose your theme"
+            android:entries="@array/theme_names"
+            android:entryValues="@array/theme_values"
+            android:defaultValue="light" />
+    </PreferenceCategory>
+    <Preference android:title="@string/about_developers_title"
+                android:key="about_developers_pref">
+    </Preference>
+</PreferenceScreen>
