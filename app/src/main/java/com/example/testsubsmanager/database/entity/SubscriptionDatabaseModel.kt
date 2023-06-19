@@ -8,7 +8,7 @@ import java.time.LocalDate
 @Entity(tableName = "subscriptions")
 data class SubscriptionDatabaseModel(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     @ColumnInfo(name = "name_sub") val nameSub: String,
     val color: String,
     val price: Double,

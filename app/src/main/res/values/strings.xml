@@ -22,4 +22,6 @@
     <string name="subscription_currency">Currency</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="monthly">Monthly</string>
+    <string name="add_subscription_button">addSubscriptionButton</string>
 </resources>

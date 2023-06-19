@@ -45,10 +45,36 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/amount_subscriptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginEnd="23dp"
+        android:layout_below="@+id/header"
+        android:orientation="vertical"
+        android:gravity="center">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/main_text"
+            android:text="0₽"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/headline3"
+            android:text="@string/monthly"
+
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/list_subscriptions_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/amount_subscriptions"
         android:layout_marginStart="23dp"
         android:layout_marginEnd="23dp"
         android:layout_marginBottom="0dp"
@@ -73,7 +99,7 @@
             android:layout_toEndOf="@+id/home"
             android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:contentDescription="addSubscriptionButton"
+            android:contentDescription="@string/add_subscription_button"
             android:focusable="true"
             android:padding="12dp"
             app:srcCompat="@drawable/add"

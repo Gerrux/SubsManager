@@ -40,7 +40,6 @@
         android:layout_marginTop="30dp"
         android:layout_marginStart="23dp"
         android:layout_marginEnd="23dp"
-        android:foreground="@color/primary_dark"
         android:hint="@string/subscription_name"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/SMDarkTheme">
@@ -67,9 +66,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:layout_below="@+id/subscriptionName"
-            android:foreground="@color/primary_dark"
             android:hint="@string/subscription_price"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/SMDarkTheme">
@@ -78,6 +76,7 @@
                 android:id="@+id/etSubscriptionPrice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="numberDecimal"
                 android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,17 +84,16 @@
             android:id="@+id/subscriptionCurrency"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             app:layout_constraintEnd_toEndOf="parent"
-            android:foreground="@color/primary_dark"
             android:hint="@string/subscription_currency"
-            style="@style/SMDarkTheme">
+            style="@style/dropdown_menu">
 
             <AutoCompleteTextView
                 android:id="@+id/etSubscriptionCurrency"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:singleLine="true" />
+                android:singleLine="true"/>
 
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -108,7 +106,6 @@
         android:layout_marginStart="23dp"
         android:layout_marginEnd="23dp"
         android:layout_marginTop="20dp"
-        android:foreground="@color/primary_dark"
         android:hint="@string/subscription_start_date"
         app:layout_constraintStart_toStartOf="parent"
         style="@style/SMDarkTheme">
@@ -117,6 +114,9 @@
             android:id="@+id/etSubscriptionStartDate"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:inputType="date"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -148,7 +148,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginEnd="10dp"
-            android:foreground="@color/primary_dark"
             android:hint="@string/subscription_duration"
             app:layout_constraintStart_toStartOf="parent"
             style="@style/SMDarkTheme">
@@ -157,6 +156,7 @@
                 android:id="@+id/etSubscriptionDuration"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="number"
                 android:maxLength="4"
                 android:singleLine="true" />
 
@@ -168,9 +168,8 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             app:layout_constraintEnd_toEndOf="parent"
-            android:foreground="@color/primary_dark"
             android:hint="@string/subscription_type_duration"
-            style="@style/SMDarkTheme">
+            style="@style/dropdown_menu">
 
             <AutoCompleteTextView
                 android:id="@+id/etSubscriptionTypeDuration"
@@ -184,8 +183,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/subscriptionBillingPeriod"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="23dp"
+        android:layout_marginTop="142dp"
         android:layout_marginEnd="23dp"
         android:layout_marginBottom="35dp"
         android:orientation="horizontal">
