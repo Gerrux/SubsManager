@@ -59,9 +59,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             )
 
             ioScope.launch {
-                ioScope.launch {
-                    repository.insertSubscription(subscription)
-                }
+                repository.insertSubscription(subscription)
             }
         }
     }
