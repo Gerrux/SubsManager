@@ -29,7 +29,6 @@ class HomeFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
 //        binding.listSubscriptions.adapter = SubscriptionAdapter()
 //
