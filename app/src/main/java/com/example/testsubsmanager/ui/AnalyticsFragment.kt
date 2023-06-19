@@ -10,8 +10,9 @@ import android.widget.ImageView
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.testsubsmanager.R
+import dagger.android.support.DaggerFragment
 
-class AnalyticsFragment : Fragment() {
+class AnalyticsFragment : DaggerFragment() {
     private lateinit var navController: NavController
 
     override fun onCreateView(

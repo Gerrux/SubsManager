@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_homeFragment_to_notificationsFragment"
             app:destination="@id/notificationsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addSubscriptionFragment"
+            app:destination="@id/addSubscriptionFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -57,5 +60,14 @@
         <action
             android:id="@+id/action_notificationsFragment_to_analyticsFragment"
             app:destination="@id/analyticsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addSubscriptionFragment"
+        android:name="com.example.testsubsmanager.ui.AddSubscriptionFragment"
+        android:label="fragment_add_subscription"
+        tools:layout="@layout/fragment_add_subscription" >
+        <action
+            android:id="@+id/action_addSubscriptionFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 </navigation>

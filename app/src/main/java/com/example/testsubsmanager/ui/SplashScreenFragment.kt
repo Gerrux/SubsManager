@@ -9,10 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import dagger.android.support.DaggerFragment
 
 
 @SuppressLint("CustomSplashScreen")
-class SplashScreenFragment : Fragment() {
+class SplashScreenFragment : DaggerFragment() {
     private lateinit var navController: NavController
 
     override fun onCreateView(

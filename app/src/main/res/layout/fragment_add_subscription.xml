@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.AddSubscriptionFragment"
+    android:background="@color/black">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/subscriptionColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="0dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/etSubscriptionColor"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            app:srcCompat="@drawable/rectangle_shape"
+            app:tint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/subscriptionName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/subscriptionColor"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginEnd="23dp"
+        android:foreground="@color/primary_dark"
+        android:hint="@string/subscription_name"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/SMDarkTheme">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSubscriptionName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/subscriptionPayment"
+        android:layout_below="@+id/subscriptionName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginEnd="23dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/subscriptionPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="3"
+            android:layout_below="@+id/subscriptionName"
+            android:foreground="@color/primary_dark"
+            android:hint="@string/subscription_price"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/SMDarkTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSubscriptionPrice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/subscriptionCurrency"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:foreground="@color/primary_dark"
+            android:hint="@string/subscription_currency"
+            style="@style/SMDarkTheme">
+
+            <AutoCompleteTextView
+                android:id="@+id/etSubscriptionCurrency"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/subscriptionStartDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/subscriptionPayment"
+        android:layout_marginStart="23dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginTop="20dp"
+        android:foreground="@color/primary_dark"
+        android:hint="@string/subscription_start_date"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/SMDarkTheme">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSubscriptionStartDate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/subscriptionBillingPeriod"
+        android:layout_below="@+id/subscriptionStartDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginEnd="23dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/ibm_medium"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/white"
+            android:text="@string/every">
+
+        </androidx.appcompat.widget.AppCompatTextView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/subscriptionDuration"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:foreground="@color/primary_dark"
+            android:hint="@string/subscription_duration"
+            app:layout_constraintStart_toStartOf="parent"
+            style="@style/SMDarkTheme">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSubscriptionDuration"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:maxLength="4"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/subscriptionTypeDuration"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:foreground="@color/primary_dark"
+            android:hint="@string/subscription_type_duration"
+            style="@style/SMDarkTheme">
+
+            <AutoCompleteTextView
+                android:id="@+id/etSubscriptionTypeDuration"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:singleLine="true" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="23dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="35dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/cancelButton"
+            style="@style/ButtonFormThemeSecondary"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/saveSubscriptionButton"
+            style="@style/ButtonFormThemeMain"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
