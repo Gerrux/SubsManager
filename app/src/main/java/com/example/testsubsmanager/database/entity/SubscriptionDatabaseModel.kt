@@ -14,7 +14,7 @@ data class SubscriptionDatabaseModel(
     val price: Double,
     @Embedded val currency: CurrencyDatabaseModel,
     @ColumnInfo(name = "start_date") val startDate: LocalDate,
-    @ColumnInfo(name = "end_date") val endDate: LocalDate,
+    @ColumnInfo(name = "end_date") val endDate: LocalDate?,
     @ColumnInfo(name = "renewal_date") val renewalDate: LocalDate,
     val duration: Int,
     @ColumnInfo(name = "type_duration") val typeDuration: String,

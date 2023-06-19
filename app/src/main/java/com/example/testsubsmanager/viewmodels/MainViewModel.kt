@@ -43,8 +43,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         val liveData: LiveData<Currency> = repository.getCurrencyByCode(currency)
         val subCurrency: Currency? = liveData.value
         val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
-        val startDate: LocalDate = LocalDate.parse(startDate, formatter)
-        val renewalDate: LocalDate = calculateRenewalDate(startDate, duration, typeDuration.uppercase())
+        val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
+        val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration.uppercase())
         if (subCurrency != null) {
 
             val subscription = Subscription(
@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                 color = color,
                 price = price,
                 currency = subCurrency,
-                startDate = startDate,
+                startDate = subStartDate,
                 renewalDate = renewalDate,
                 duration = duration,
                 typeDuration = TypeDuration.valueOf(typeDuration.uppercase())
