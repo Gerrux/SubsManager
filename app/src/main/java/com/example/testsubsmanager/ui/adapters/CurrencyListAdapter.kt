@@ -1,7 +1,6 @@
 package com.example.testsubsmanager.ui.adapters
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ class CurrencyListAdapter(var currencies: List<Currency>) : RecyclerView.Adapter
             itemView.setOnClickListener {
                 val position = adapterPosition
 
-                Log.e("SB", "onItemClickListener: $onItemClickListener")
                 if (position != RecyclerView.NO_POSITION) {
                     selectedItemPosition = position
                     notifyDataSetChanged()

@@ -169,13 +169,15 @@
             android:layout_weight="2"
             app:layout_constraintEnd_toEndOf="parent"
             android:hint="@string/subscription_type_duration"
+            android:inputType="textNoSuggestions"
             style="@style/dropdown_menu">
 
             <AutoCompleteTextView
                 android:id="@+id/etSubscriptionTypeDuration"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:inputType="none"/>
 
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>

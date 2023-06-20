@@ -9,7 +9,7 @@ interface SubscriptionDao {
 
     @Transaction
     @Query("SELECT * FROM subscriptions")
-    fun getAllSubscriptions(): LiveData<List<SubscriptionDatabaseModel>>
+    fun getAllSubscriptions(): List<SubscriptionDatabaseModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(subscription: SubscriptionDatabaseModel)
@@ -21,8 +21,8 @@ interface SubscriptionDao {
     suspend fun delete(subscription: SubscriptionDatabaseModel)
 
     @Query("SELECT * FROM subscriptions WHERE id = :id")
-    fun getSubscriptionById(id: Int): LiveData<SubscriptionDatabaseModel>
+    fun getSubscriptionById(id: Int): SubscriptionDatabaseModel
 
     @Query("SELECT * FROM subscriptions WHERE renewal_date = :renewalDate ORDER BY renewal_date ASC")
-    fun getSubscriptionsByRenewalDate(renewalDate: LocalDate): LiveData<List<SubscriptionDatabaseModel>>
+    fun getSubscriptionsByRenewalDate(renewalDate: LocalDate): List<SubscriptionDatabaseModel>
 }

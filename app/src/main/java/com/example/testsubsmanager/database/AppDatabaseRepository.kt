@@ -43,16 +43,12 @@ class AppDatabaseRepository(private val database: AppDatabase)  {
         subscriptionDao.delete(SubscriptionMapper.toEntity(subscription))
     }
 
-    fun getAllSubscriptions(): LiveData<List<Subscription>> {
-        return Transformations.map(subscriptionDao.getAllSubscriptions()) { subscriptionList ->
-            subscriptionList.map { SubscriptionMapper.toDTO(it) }
-        }
+    fun getAllSubscriptions(): List<Subscription> {
+        return subscriptionDao.getAllSubscriptions().map { SubscriptionMapper.toDTO(it) }
     }
 
-    fun getSubscriptionById(id: Int): LiveData<Subscription> {
-        return Transformations.map(subscriptionDao.getSubscriptionById(id)) { subscription ->
-            SubscriptionMapper.toDTO(subscription)
-        }
+    fun getSubscriptionById(id: Int): Subscription {
+        return SubscriptionMapper.toDTO(subscriptionDao.getSubscriptionById(id))
     }
 
     fun getAllNotifications(): LiveData<List<Notification>> {

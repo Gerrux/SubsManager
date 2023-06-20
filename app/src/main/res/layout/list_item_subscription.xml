@@ -1,8 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/black"
+    android:clickable="true"
+    android:focusable="true">
+    <TextView
+        android:id="@+id/subscriptionNameTextView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:paddingStart="23dp"
+        android:text="Name"
+        style="@style/headline3"/>
+    <TextView
+        android:id="@+id/subscriptionRenewalDateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RenewalDate"
+        android:padding="10dp"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/teal_700"
+        android:textSize="15dp"
+        />
+    <TextView
+        android:id="@+id/subscriptionPriceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price"
+        android:padding="10dp"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/teal_700"
+        android:textSize="23dp"
+        />
 
 </LinearLayout>

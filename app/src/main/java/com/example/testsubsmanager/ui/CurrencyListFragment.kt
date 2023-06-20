@@ -45,7 +45,6 @@ class CurrencyListFragment : DaggerFragment() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-
         val currencies = runBlocking { viewModel.getAllCurrencies() }
         adapter = CurrencyListAdapter(currencies.sortedBy { it.code })
         adapter.setOnItemClickListener { currency ->
@@ -55,8 +54,6 @@ class CurrencyListFragment : DaggerFragment() {
         }
         adapter.notifyDataSetChanged()
         binding.recyclerView.adapter = adapter
-
-
     }
 
 }

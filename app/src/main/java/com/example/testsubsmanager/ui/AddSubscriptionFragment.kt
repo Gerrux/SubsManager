@@ -1,18 +1,20 @@
 package com.example.testsubsmanager.ui
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.testsubsmanager.R
+import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.databinding.FragmentAddSubscriptionBinding
 import com.example.testsubsmanager.viewmodels.MainViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.android.support.DaggerFragment
 import vadiole.colorpicker.ColorModel
@@ -88,6 +90,14 @@ class AddSubscriptionFragment : DaggerFragment() {
             navController.navigate(R.id.action_addSubscriptionFragment_to_currencyListFragment)
         }
 
+        val options = TypeDuration.values().map { it.name }.toTypedArray()
+        val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, options)
+        binding.etSubscriptionTypeDuration.setAdapter(adapter)
+        binding.etSubscriptionTypeDuration.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                v.hideKeyboard()
+            }
+        }
         binding.cancelButton.setOnClickListener {
             navController.navigate(R.id.action_addSubscriptionFragment_to_homeFragment)
         }
@@ -98,7 +108,6 @@ class AddSubscriptionFragment : DaggerFragment() {
                 subscriptionName=binding.etSubscriptionName.text.toString(),
                 color=hexColor,
                 price=binding.etSubscriptionPrice.text.toString().toDouble(),
-                currency=binding.etSubscriptionCurrency.text.toString(),
                 startDate=binding.etSubscriptionStartDate.text.toString(),
                 duration=binding.etSubscriptionDuration.text.toString().toInt(),
                 typeDuration=binding.etSubscriptionTypeDuration.text.toString()
@@ -106,6 +115,15 @@ class AddSubscriptionFragment : DaggerFragment() {
             navController.navigate(R.id.action_addSubscriptionFragment_to_homeFragment)
         }
     }
+
+    private fun View.hideKeyboard(): Boolean {
+        try {
+            val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            return inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+        } catch (ignored: RuntimeException) { }
+        return false
+    }
+
 
     private fun showColorPickerDialog(selectedColor: Int, callback: (Int) -> Unit){
         colorPicker = ColorPickerDialog.Builder()

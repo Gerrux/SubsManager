@@ -1,6 +1,5 @@
 package com.example.testsubsmanager.viewmodels
 
-import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,14 +9,10 @@ import com.example.testsubsmanager.database.dto.Currency
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.services.currency.CurrencyRetrofitClient
-import com.example.testsubsmanager.services.currency.ValCurs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -31,12 +26,11 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
-    fun getAllSubscriptions(): LiveData<List<Subscription>> {
-        ioScope.launch {
+    suspend fun getAllSubscriptions(): List<Subscription> {
+        return withContext(Dispatchers.IO) {
             val subscriptions = repository.getAllSubscriptions()
-            subscriptionsLiveData.postValue(subscriptions.value)
+            subscriptions
         }
-        return subscriptionsLiveData
     }
 
     suspend fun getAllCurrencies(): List<Currency> {
@@ -49,11 +43,10 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     fun saveSubscription(subscriptionName: String,
                          color: String = "#FFFFFF",
                          price: Double = 0.0,
-                         currency: String = "RUB",
                          startDate: String = LocalDate.now().toString(),
                          duration: Int = 1,
                          typeDuration: String = "Months") {
-        val subCurrency: Currency = repository.getCurrencyByCode(currency)
+        val subCurrency: Currency = selectedCurrency!!
         val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
         val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
         val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration.uppercase())
