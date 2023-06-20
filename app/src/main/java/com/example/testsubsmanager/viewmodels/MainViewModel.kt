@@ -14,6 +14,7 @@ import com.example.testsubsmanager.services.currency.ValCurs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,6 +38,13 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         return subscriptionsLiveData
     }
 
+    suspend fun getAllCurrencies(): List<Currency> {
+        return withContext(Dispatchers.IO) {
+            val currencies = repository.getAllCurrencies()
+            currencies
+        }
+    }
+
     fun saveSubscription(subscriptionName: String,
                          color: String = "#FFFFFF",
                          price: Double = 0.0,
@@ -44,27 +52,24 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                          startDate: String = LocalDate.now().toString(),
                          duration: Int = 1,
                          typeDuration: String = "Months") {
-        val liveData: LiveData<Currency> = repository.getCurrencyByCode(currency)
-        val subCurrency: Currency? = liveData.value
+        val subCurrency: Currency = repository.getCurrencyByCode(currency)
         val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
         val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
         val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration.uppercase())
-        if (subCurrency != null) {
 
-            val subscription = Subscription(
-                nameSub = subscriptionName,
-                color = color,
-                price = price,
-                currency = subCurrency,
-                startDate = subStartDate,
-                renewalDate = renewalDate,
-                duration = duration,
-                typeDuration = TypeDuration.valueOf(typeDuration.uppercase())
-            )
+        val subscription = Subscription(
+            nameSub = subscriptionName,
+            color = color,
+            price = price,
+            currency = subCurrency,
+            startDate = subStartDate,
+            renewalDate = renewalDate,
+            duration = duration,
+            typeDuration = TypeDuration.valueOf(typeDuration.uppercase())
+        )
 
-            ioScope.launch {
-                repository.insertSubscription(subscription)
-            }
+        ioScope.launch {
+            repository.insertSubscription(subscription)
         }
     }
 
@@ -82,39 +87,58 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     }
 
 
+    private fun getCurrencyByCode(code: String, callback: (Currency) -> Unit){
+        ioScope.launch {
+            repository.getCurrencyByCode(code)?.let {
+                mainScope.launch { callback(it) }
+            }
+        }
+    }
+
     suspend fun fetchAndSaveCurrencyRates(date: String) {
         try {
             val valCurs = CurrencyRetrofitClient.getApi().getCurrencyRates(date)
-            val currenciesCBRs = valCurs.valutes
-
-            currenciesCBRs.forEach { currencyCBR ->
-                val exchangeRate = currencyCBR.value.toDouble()
-                val adjustedExchangeRate = exchangeRate / currencyCBR.nominal.toDouble()
-
-                val existingCurrency = repository.getCurrencyByCode(currencyCBR.charCode)
-
-                if (existingCurrency != null) {
-                    val updatedCurrency = existingCurrency.value!!.copy(
-                        exchangeRate = adjustedExchangeRate,
-                        quoteDate = date
-                    )
-                    ioScope.launch {
-                        repository.updateCurrency(updatedCurrency)
-                    }
-                } else {
-                    val newCurrency = Currency(
-                        code = currencyCBR.charCode,
-                        name = currencyCBR.name,
-                        exchangeRate = adjustedExchangeRate,
-                        quoteDate = date
-                    )
-                    ioScope.launch {
-                        mainScope.launch { repository.insertCurrency(newCurrency) }
+            if (valCurs.isSuccessful) {
+                val currenciesCBRs = valCurs.body()!!.valutes
+                val listCurrencies = getAllCurrencies()
+                currenciesCBRs.forEach { currencyCBR ->
+                    val exchangeRate = currencyCBR.value.replace(",", ".").toDouble()
+                    val adjustedExchangeRate = exchangeRate / currencyCBR.nominal.toDouble()
+                    val existingCurrency = listCurrencies.find{ it.code == currencyCBR.charCode }
+                    if (existingCurrency != null) {
+                        val updatedCurrency = existingCurrency.copy(
+                            exchangeRate = adjustedExchangeRate,
+                            quoteDate = date
+                        )
+                        ioScope.launch {
+                            repository.updateCurrency(updatedCurrency)
+                        }
+                    } else {
+                        val newCurrency = Currency(
+                            code = currencyCBR.charCode,
+                            name = currencyCBR.name,
+                            exchangeRate = adjustedExchangeRate,
+                            quoteDate = date
+                        )
+                        ioScope.launch {
+                            mainScope.launch { repository.insertCurrency(newCurrency) }
+                        }
                     }
                 }
+                if (listCurrencies.find{ it.code == "RUB" } == null){
+                    ioScope.launch {
+                        mainScope.launch { repository.insertCurrency(Currency(
+                            code = "RUB",
+                            name = "Russian Ruble",
+                            exchangeRate = 1.0,
+                            quoteDate = date
+                        )) }
+                    }
+                }
+
             }
         } catch (e: Exception) {
-            // Handle exception
+            Log.e("SB", e.toString())
         }
     }
 

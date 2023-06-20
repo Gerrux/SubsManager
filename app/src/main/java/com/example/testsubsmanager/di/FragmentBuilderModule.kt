@@ -2,6 +2,7 @@ package com.example.testsubsmanager.di
 
 import com.example.testsubsmanager.ui.AddSubscriptionFragment
 import com.example.testsubsmanager.ui.AnalyticsFragment
+import com.example.testsubsmanager.ui.CurrencyListFragment
 import com.example.testsubsmanager.ui.HomeFragment
 import com.example.testsubsmanager.ui.NotificationsFragment
 import com.example.testsubsmanager.ui.SettingsFragment
@@ -27,6 +28,9 @@ abstract class FragmentBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun contributeAddSubscriptionFragment(): AddSubscriptionFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeCurrencyListFragment(): CurrencyListFragment
 
     @ContributesAndroidInjector
     abstract fun contributeSubscriptionDetailFragment(): SubscriptionDetailFragment

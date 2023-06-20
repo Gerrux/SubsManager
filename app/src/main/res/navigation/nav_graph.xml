@@ -69,5 +69,17 @@
         <action
             android:id="@+id/action_addSubscriptionFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_addSubscriptionFragment_to_currencyListFragment"
+            app:destination="@id/currencyListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/currencyListFragment"
+        android:name="com.example.testsubsmanager.ui.CurrencyListFragment"
+        android:label="fragment_currency_list"
+        tools:layout="@layout/fragment_currency_list" >
+        <action
+            android:id="@+id/action_currencyListFragment_to_addSubscriptionFragment"
+            app:destination="@id/addSubscriptionFragment" />
     </fragment>
 </navigation>

@@ -8,7 +8,7 @@ import com.example.testsubsmanager.database.entity.CurrencyDatabaseModel
 interface CurrencyDao {
 
     @Query("SELECT * FROM currencies")
-    fun getAllCurrencies(): LiveData<List<CurrencyDatabaseModel>>
+    fun getAllCurrencies(): List<CurrencyDatabaseModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(currency: CurrencyDatabaseModel)
@@ -20,5 +20,5 @@ interface CurrencyDao {
     suspend fun delete(currency: CurrencyDatabaseModel)
 
     @Query("SELECT * FROM currencies WHERE code = :code")
-    fun getCurrencyByCode(code: String): LiveData<CurrencyDatabaseModel>
+    fun getCurrencyByCode(code: String): CurrencyDatabaseModel
 }

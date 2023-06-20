@@ -86,16 +86,12 @@ class AppDatabaseRepository(private val database: AppDatabase)  {
         currencyDao.delete(CurrencyMapper.toEntity(currency))
     }
 
-    fun getAllCurrencies(): LiveData<List<Currency>> {
-        return Transformations.map(currencyDao.getAllCurrencies()) { currencyList ->
-            currencyList.map { CurrencyMapper.toDTO(it) }
-        }
+    fun getAllCurrencies(): List<Currency> {
+        return currencyDao.getAllCurrencies().map { CurrencyMapper.toDTO(it) }
     }
 
-    fun getCurrencyByCode(code: String): LiveData<Currency> {
-        return Transformations.map(currencyDao.getCurrencyByCode(code)) { currency ->
-            CurrencyMapper.toDTO(currency)
-        }
+    fun getCurrencyByCode(code: String): Currency {
+        return CurrencyMapper.toDTO(currencyDao.getCurrencyByCode(code))
     }
 
 

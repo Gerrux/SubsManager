@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/primary_dark"
+    >
+    <TextView
+        android:id="@+id/currencyCodeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="23dp"
+        android:text="USD"
+        style="@style/headline3"
+        tools:ignore="RtlSymmetry" />
+    <TextView
+        android:id="@+id/currencyNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Доллар США"
+        android:padding="10dp"
+        android:layout_marginStart="10dp"
+        android:textColor="@color/teal_700"
+        android:textSize="23dp"
+        />
+
+</LinearLayout>

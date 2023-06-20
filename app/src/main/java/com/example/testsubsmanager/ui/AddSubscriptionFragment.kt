@@ -24,10 +24,10 @@ import javax.inject.Inject
 
 class AddSubscriptionFragment : DaggerFragment() {
     private lateinit var navController: NavController
+    private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var binding: FragmentAddSubscriptionBinding
     @Inject
     lateinit var viewModel: MainViewModel
-    private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var  colorPicker: ColorPickerDialog
     private var selectedColor: Int = Color.parseColor("#FFFFFF")
 
@@ -83,6 +83,10 @@ class AddSubscriptionFragment : DaggerFragment() {
             val formattedDate = dateFormat.format(selectedDate.time)
 
             binding.etSubscriptionStartDate.setText(formattedDate)
+        }
+
+        binding.etSubscriptionCurrency.setOnClickListener{
+            navController.navigate(R.id.action_addSubscriptionFragment_to_currencyListFragment)
         }
 
         binding.cancelButton.setOnClickListener {
