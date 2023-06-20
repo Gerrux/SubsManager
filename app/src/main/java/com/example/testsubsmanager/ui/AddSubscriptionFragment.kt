@@ -3,6 +3,7 @@ package com.example.testsubsmanager.ui
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +60,8 @@ class AddSubscriptionFragment : DaggerFragment() {
                 selectedColor
             }
         }
+
+        binding.etSubscriptionCurrency.setText(viewModel.getSelectedCurrency()?.code ?: "")
 
         val datePickerBuilder = MaterialDatePicker.Builder.datePicker()
             .setTitleText("SELECT A DATE")

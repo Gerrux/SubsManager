@@ -32,11 +32,9 @@ class MainActivity : DaggerAppCompatActivity() {
     }
     private fun showBottomNav() {
         bottomNavigationView.visibility = View.VISIBLE
-
     }
 
     private fun hideBottomNav() {
         bottomNavigationView.visibility = View.GONE
-
     }
 }

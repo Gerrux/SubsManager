@@ -42,11 +42,21 @@ class CurrencyListFragment : DaggerFragment() {
         navController = Navigation.findNavController(view)
 
         adapter = CurrencyListAdapter(emptyList())
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
+
 
         val currencies = runBlocking { viewModel.getAllCurrencies() }
-        binding.recyclerView.adapter = CurrencyListAdapter(currencies.sortedBy { it.code })
+        adapter = CurrencyListAdapter(currencies.sortedBy { it.code })
+        adapter.setOnItemClickListener { currency ->
+            Log.e("SB", "Всё работает!")
+            viewModel.setSelectedCurrency(currency)
+            navController.navigate(R.id.action_currencyListFragment_to_addSubscriptionFragment)
+        }
+        adapter.notifyDataSetChanged()
+        binding.recyclerView.adapter = adapter
+
+
     }
 
 }

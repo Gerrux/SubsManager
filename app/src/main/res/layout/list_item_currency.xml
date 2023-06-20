@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/primary_dark"
+    android:background="@drawable/background_selector"
+    android:clickable="true"
+    android:focusable="true"
     >
     <TextView
         android:id="@+id/currencyCodeTextView"

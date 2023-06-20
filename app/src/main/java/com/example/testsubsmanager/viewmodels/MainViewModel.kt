@@ -27,6 +27,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: AppDatabaseRepository) : ViewModel() {
 
     private val subscriptionsLiveData = MutableLiveData<List<Subscription>>()
+    private var selectedCurrency: Currency? = null
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
 
@@ -140,6 +141,14 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         } catch (e: Exception) {
             Log.e("SB", e.toString())
         }
+    }
+
+    fun setSelectedCurrency(currency: Currency) {
+        selectedCurrency = currency
+    }
+
+    fun getSelectedCurrency(): Currency? {
+        return selectedCurrency
     }
 
 }
