@@ -9,8 +9,8 @@ object CurrencyMapper: Mapper<CurrencyDatabaseModel, Currency> {
         return Currency(
             code = from.code,
             name = from.name,
-            symbol = from.symbol,
-            exchangeRate = from.exchangeRate
+            exchangeRate = from.exchangeRate,
+            quoteDate = from.quoteDate
         )
     }
 
@@ -18,8 +18,8 @@ object CurrencyMapper: Mapper<CurrencyDatabaseModel, Currency> {
         return CurrencyDatabaseModel(
             code = from.code,
             name = from.name,
-            symbol = from.symbol,
-            exchangeRate = from.exchangeRate
+            exchangeRate = from.exchangeRate,
+            quoteDate = from.quoteDate
         )
     }
 

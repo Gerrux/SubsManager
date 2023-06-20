@@ -74,4 +74,8 @@ dependencies {
 
     // ColorPicker
     implementation 'io.github.vadiole:colorpicker:1.0.2'
+
+    // Retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-simplexml:2.9.0'
 }

@@ -23,6 +23,6 @@ interface SubscriptionDao {
     @Query("SELECT * FROM subscriptions WHERE id = :id")
     fun getSubscriptionById(id: Int): LiveData<SubscriptionDatabaseModel>
 
-    @Query("SELECT * FROM subscriptions WHERE renewal_date = :date ORDER BY renewal_date ASC")
-    fun getSubscriptionsByRenewalDate(date: LocalDate): LiveData<List<SubscriptionDatabaseModel>>
+    @Query("SELECT * FROM subscriptions WHERE renewal_date = :renewalDate ORDER BY renewal_date ASC")
+    fun getSubscriptionsByRenewalDate(renewalDate: LocalDate): LiveData<List<SubscriptionDatabaseModel>>
 }

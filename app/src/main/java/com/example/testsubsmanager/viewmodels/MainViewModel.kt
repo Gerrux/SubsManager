@@ -1,7 +1,7 @@
 package com.example.testsubsmanager.viewmodels
 
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,12 +9,16 @@ import com.example.testsubsmanager.database.AppDatabaseRepository
 import com.example.testsubsmanager.database.dto.Currency
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.dto.TypeDuration
+import com.example.testsubsmanager.services.currency.CurrencyRetrofitClient
+import com.example.testsubsmanager.services.currency.ValCurs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -75,6 +79,43 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         }
 
         return renewalDate
+    }
+
+
+    suspend fun fetchAndSaveCurrencyRates(date: String) {
+        try {
+            val valCurs = CurrencyRetrofitClient.getApi().getCurrencyRates(date)
+            val currenciesCBRs = valCurs.valutes
+
+            currenciesCBRs.forEach { currencyCBR ->
+                val exchangeRate = currencyCBR.value.toDouble()
+                val adjustedExchangeRate = exchangeRate / currencyCBR.nominal.toDouble()
+
+                val existingCurrency = repository.getCurrencyByCode(currencyCBR.charCode)
+
+                if (existingCurrency != null) {
+                    val updatedCurrency = existingCurrency.value!!.copy(
+                        exchangeRate = adjustedExchangeRate,
+                        quoteDate = date
+                    )
+                    ioScope.launch {
+                        repository.updateCurrency(updatedCurrency)
+                    }
+                } else {
+                    val newCurrency = Currency(
+                        code = currencyCBR.charCode,
+                        name = currencyCBR.name,
+                        exchangeRate = adjustedExchangeRate,
+                        quoteDate = date
+                    )
+                    ioScope.launch {
+                        mainScope.launch { repository.insertCurrency(newCurrency) }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // Handle exception
+        }
     }
 
 }

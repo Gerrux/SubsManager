@@ -8,6 +8,6 @@ data class CurrencyDatabaseModel(
     @PrimaryKey
     val code: String,
     val name: String,
-    val symbol: String,
-    @ColumnInfo(name = "exchange_rate") val exchangeRate: Double
+    @ColumnInfo(name = "exchange_rate") val exchangeRate: Double,
+    @ColumnInfo(name = "quote_date") val quoteDate: String
 )
