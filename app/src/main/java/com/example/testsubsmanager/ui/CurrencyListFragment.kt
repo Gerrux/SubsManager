@@ -22,7 +22,6 @@ import javax.inject.Inject
 
 class CurrencyListFragment : DaggerFragment() {
     private lateinit var navController: NavController
-    private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var adapter: CurrencyListAdapter
     private lateinit var binding: FragmentCurrencyListBinding
     @Inject
@@ -42,24 +41,12 @@ class CurrencyListFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        bottomNavigation = activity?.findViewById(R.id.bNav)!!
-        bottomNavigation.visibility = View.GONE
         adapter = CurrencyListAdapter(emptyList())
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
         val currencies = runBlocking { viewModel.getAllCurrencies() }
         binding.recyclerView.adapter = CurrencyListAdapter(currencies.sortedBy { it.code })
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        showBottomNavigationView()
-    }
-
-    private fun showBottomNavigationView() {
-        bottomNavigation.visibility = View.VISIBLE
     }
 
 }

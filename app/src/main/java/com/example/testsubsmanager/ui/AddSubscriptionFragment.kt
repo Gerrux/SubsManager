@@ -24,7 +24,6 @@ import javax.inject.Inject
 
 class AddSubscriptionFragment : DaggerFragment() {
     private lateinit var navController: NavController
-    private lateinit var bottomNavigation: BottomNavigationView
     private lateinit var binding: FragmentAddSubscriptionBinding
     @Inject
     lateinit var viewModel: MainViewModel
@@ -42,9 +41,6 @@ class AddSubscriptionFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
-        bottomNavigation = activity?.findViewById(R.id.bNav)!!
-        bottomNavigation.visibility = View.GONE
 
         colorPicker = ColorPickerDialog.Builder()
             .setInitialColor(selectedColor)
@@ -90,7 +86,6 @@ class AddSubscriptionFragment : DaggerFragment() {
         }
 
         binding.cancelButton.setOnClickListener {
-            showBottomNavigationView()
             navController.navigate(R.id.action_addSubscriptionFragment_to_homeFragment)
         }
 
@@ -109,11 +104,6 @@ class AddSubscriptionFragment : DaggerFragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        showBottomNavigationView()
-    }
-
     private fun showColorPickerDialog(selectedColor: Int, callback: (Int) -> Unit){
         colorPicker = ColorPickerDialog.Builder()
             .setInitialColor(selectedColor)
@@ -128,9 +118,5 @@ class AddSubscriptionFragment : DaggerFragment() {
             }
             .create()
         colorPicker.show(childFragmentManager, "color_picker")
-    }
-
-    private fun showBottomNavigationView() {
-        bottomNavigation.visibility = View.VISIBLE
     }
 }

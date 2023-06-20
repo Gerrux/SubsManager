@@ -25,7 +25,6 @@ import javax.inject.Inject
 @SuppressLint("CustomSplashScreen")
 class SplashScreenFragment : DaggerFragment() {
     private lateinit var navController: NavController
-    private lateinit var bottomNavigation: BottomNavigationView
     @Inject
     lateinit var viewModel: MainViewModel
 
@@ -42,8 +41,6 @@ class SplashScreenFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        bottomNavigation = activity?.findViewById(R.id.bNav)!!
-        bottomNavigation.visibility = View.GONE
 
         GlobalScope.launch(Dispatchers.Main) {
             val currentDate = SimpleDateFormat("dd/MM/yyyy").format(Date())
@@ -52,14 +49,5 @@ class SplashScreenFragment : DaggerFragment() {
             navController.navigate(R.id.action_splashScreenFragment_to_homeFragment)
         }
 
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        showBottomNavigationView()
-    }
-
-    private fun showBottomNavigationView() {
-        bottomNavigation.visibility = View.VISIBLE
     }
 }
