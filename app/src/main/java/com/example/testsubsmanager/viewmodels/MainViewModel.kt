@@ -1,13 +1,17 @@
 package com.example.testsubsmanager.viewmodels
 
+import android.content.Context
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.preference.PreferenceManager
 import com.example.testsubsmanager.database.AppDatabaseRepository
 import com.example.testsubsmanager.database.dto.Currency
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.services.currency.CurrencyRetrofitClient
+import com.example.testsubsmanager.ui.SettingsFragment
 import com.example.testsubsmanager.ui.models.FormData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,10 +35,11 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
     var formData: MutableLiveData<FormData> = MutableLiveData()
-    private suspend fun setDisplayedCurrency(code: String): Currency{
+    private lateinit var displayedCurrency: Currency
+    suspend fun setDisplayedCurrency(code: String) {
         return withContext(Dispatchers.IO) {
             val currency = repository.getCurrencyByCode(code)
-            currency
+            displayedCurrency = currency
         }
     }
 
@@ -161,7 +166,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         return selectedCurrency
     }
 
-    fun getPrettyTotalMonthlyCost(subscriptions: List<Subscription>, displayedCurrency: String = "RUB"): String {
+    fun getPrettyTotalMonthlyCost(subscriptions: List<Subscription>): String {
         val totalCostResult = calculateTotalMonthlyCost(subscriptions)
         val totalCost = totalCostResult.first
         val isConverted = totalCostResult.second
@@ -172,7 +177,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             prettyTotalCost = "≈$prettyTotalCost"
         }
 
-        return "$prettyTotalCost $displayedCurrency"
+        return "$prettyTotalCost ${displayedCurrency.code}"
     }
 
     private fun formatNumber(number: Double): String {
@@ -199,8 +204,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         return (this * factor).roundToInt() / factor
     }
 
-    private fun calculateTotalMonthlyCost(subscriptions: List<Subscription>, displayedCurrencyString: String = "RUB"): Pair<Double, Boolean> {
-        val displayedCurrency: Currency = runBlocking { setDisplayedCurrency(displayedCurrencyString) }
+    private fun calculateTotalMonthlyCost(subscriptions: List<Subscription>): Pair<Double, Boolean> {
+        val displayedCurrency: Currency = displayedCurrency
         var totalCost = 0.0
         var countConversions = 0
         var isConverted = false
@@ -249,6 +254,25 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             TypeDuration.WEEKS -> totalMonths * (duration.toDouble() / 4)
             TypeDuration.MONTHS -> totalMonths * duration.toDouble()
             TypeDuration.YEARS -> totalMonths * (duration.toDouble() * 12)
+        }
+    }
+
+    fun settingsChanged(key: String?, context: Context) {
+        if (key != null) {
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+            when (key) {
+                "notifications" -> {
+                    // Handle the change in the "notifications" setting
+                }
+                "theme" -> {
+                    // Handle the change in the "theme" setting
+                }
+                "currency" -> {
+                    val value = sharedPreferences.getString(key, "RUB")
+                    runBlocking{ value?.let { setDisplayedCurrency(it) } }
+                }
+            }
         }
     }
 

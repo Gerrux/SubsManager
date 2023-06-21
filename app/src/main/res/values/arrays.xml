@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="currency_names">
+        <item>Russian Ruble (RUB)</item>
         <item>US Dollar (USD)</item>
         <item>Euro (EUR)</item>
+        <item>Turkish Lira (TRY)</item>
         <item>British Pound (GBP)</item>
         <item>Japanese Yen (JPY)</item>
     </string-array>
     <string-array name="currency_codes">
+        <item>RUB</item>
         <item>USD</item>
         <item>EUR</item>
+        <item>TRY</item>
         <item>GBP</item>
         <item>JPY</item>
     </string-array>

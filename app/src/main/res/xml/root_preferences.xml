@@ -6,18 +6,13 @@
             android:key="notifications"
             android:title="Notifications"
             android:summary="Enable or disable notifications" />
-        <EditTextPreference
-            android:key="username"
-            android:title="Username"
-            android:summary="Enter your username"
-            android:defaultValue="user" />
         <ListPreference
             android:key="currency"
             android:title="Currency"
             android:summary="Select your preferred currency"
             android:entries="@array/currency_names"
             android:entryValues="@array/currency_codes"
-            android:defaultValue="USD" />
+            android:defaultValue="RUB" />
     </PreferenceCategory>
 
     <PreferenceCategory

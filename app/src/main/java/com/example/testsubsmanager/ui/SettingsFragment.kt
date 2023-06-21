@@ -10,11 +10,15 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.preference.Preference
 import com.example.testsubsmanager.R
+import com.example.testsubsmanager.viewmodels.MainViewModel
 import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 
-class SettingsFragment: DaggerFragment() {
+class SettingsFragment: DaggerFragment(), PreferenceFragment.SettingsChangeListener {
     private lateinit var navController: NavController
+    @Inject
+    lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,8 +29,12 @@ class SettingsFragment: DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val preferenceFragment = PreferenceFragment()
+        preferenceFragment.settingsChangeListener = this
+
         childFragmentManager.beginTransaction()
-            .replace(R.id.settings_container, PreferenceFragment())
+            .replace(R.id.settings_container, preferenceFragment)
             .commit()
 
         navController = Navigation.findNavController(view)
@@ -35,5 +43,9 @@ class SettingsFragment: DaggerFragment() {
         backButton.setOnClickListener {
             navController.navigate(R.id.action_settingsFragment_to_homeFragment)
         }
+    }
+
+    override fun onSettingsChanged(key: String?) {
+        viewModel.settingsChanged(key, requireContext())
     }
 }

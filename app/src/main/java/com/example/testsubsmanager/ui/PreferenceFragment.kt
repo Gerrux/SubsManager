@@ -9,11 +9,16 @@ import androidx.preference.EditTextPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
 import com.example.testsubsmanager.R
 
 class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+    interface SettingsChangeListener {
+        fun onSettingsChanged(key: String?)
+    }
 
+    var settingsChangeListener: SettingsChangeListener? = null
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
@@ -38,29 +43,33 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
         sharedPreferences: SharedPreferences?,
         key: String?
     ) {
+        settingsChangeListener?.onSettingsChanged(key)
         when (key) {
             "notifications" -> {
                 val notificationsPref = findPreference<SwitchPreferenceCompat>(key)
                 val isEnabled = notificationsPref?.isChecked ?: false
-                // Обработка изменения настройки
-            }
-            "username" -> {
-                val usernamePref = findPreference<EditTextPreference>(key)
-                val username = usernamePref?.text ?: ""
-                // Обработка изменения настройки
+
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                sharedPreferences.edit().putBoolean("notifications", isEnabled).apply()
             }
             "theme" -> {
                 val themePref = findPreference<ListPreference>(key)
                 val theme = themePref?.value ?: ""
-                // Обработка изменения настройки
+
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                sharedPreferences.edit().putString("theme", theme).apply()
             }
             "currency" -> {
                 val currencyPref = findPreference<ListPreference>(key)
                 val currency = currencyPref?.value ?: ""
-                // Обработка изменения настройки
+
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                sharedPreferences.edit().putString("currency", currency).apply()
             }
         }
     }
+
+
 
     private fun showAboutDevelopersDialog() {
         Log.d(TAG, "showAboutDevelopersDialog() called")
