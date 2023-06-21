@@ -284,12 +284,37 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         }
     }
 
-    fun setSelectedSubscription(subscription: Subscription) {
+    fun setSelectedSubscription(subscription: Subscription?) {
         selectedSubscription = subscription
     }
 
     fun getSelectedSubscription(): Subscription? {
         return selectedSubscription
+    }
+
+    fun updateSubscription(subscriptionName: String, color: String, price: Double, startDate: String, duration: Int, typeDuration: String) {
+        val subCurrency: Currency = selectedCurrency!!
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
+        val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
+        val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration.uppercase())
+
+        val updatedSubscription = Subscription(
+            id = selectedSubscription!!.id,
+            nameSub = subscriptionName,
+            color = color,
+            price = price,
+            currency = subCurrency,
+            startDate = subStartDate,
+            renewalDate = renewalDate,
+            duration = duration,
+            typeDuration = TypeDuration.valueOf(typeDuration.uppercase()))
+
+        ioScope.launch {
+            mainScope.launch {
+                repository.updateSubscription(updatedSubscription)
+            }
+        }
+
     }
 
 }

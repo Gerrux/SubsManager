@@ -12,8 +12,11 @@ import com.example.testsubsmanager.R
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.databinding.FragmentAddSubscriptionBinding
 import com.example.testsubsmanager.databinding.FragmentSubscriptionDetailBinding
+import com.example.testsubsmanager.ui.models.FormData
 import com.example.testsubsmanager.viewmodels.MainViewModel
 import dagger.android.support.DaggerFragment
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import javax.inject.Inject
 
 class SubscriptionDetailFragment : DaggerFragment() {
@@ -53,9 +56,20 @@ class SubscriptionDetailFragment : DaggerFragment() {
 
         binding.backButton.setOnClickListener {
             navController.navigate(R.id.action_subscriptionDetailFragment_to_homeFragment)
+            viewModel.setSelectedSubscription(null)
         }
         binding.editSubscriptionButton.setOnClickListener {
-            navController.navigate(R.id.action_subscriptionDetailFragment_to_homeFragment) // To Edit fragment
+            val selectedSubscription = viewModel.getSelectedSubscription()!!
+            val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            viewModel.formData.value = FormData(
+                subscriptionName = selectedSubscription.nameSub,
+                color = selectedSubscription.color,
+                price = selectedSubscription.price.toString(),
+                startDate = selectedSubscription.startDate.format(formatter).toString(),
+                duration = selectedSubscription.duration.toString(),
+                typeDuration = selectedSubscription.typeDuration.name
+            )
+            navController.navigate(R.id.action_subscriptionDetailFragment_to_addSubscriptionFragment) // To Edit fragment
         }
     }
 

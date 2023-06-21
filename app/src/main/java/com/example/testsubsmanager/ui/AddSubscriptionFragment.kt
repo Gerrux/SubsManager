@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,6 +91,11 @@ class AddSubscriptionFragment : DaggerFragment() {
             saveFormData()
             navController.navigate(R.id.action_addSubscriptionFragment_to_currencyListFragment)
         }
+        binding.etSubscriptionCurrency.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                v.hideKeyboard()
+            }
+        }
 
         val options = TypeDuration.values().map { it.name }.toTypedArray()
         val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, options)
@@ -107,18 +111,31 @@ class AddSubscriptionFragment : DaggerFragment() {
 
         binding.saveSubscriptionButton.setOnClickListener {
             try {
-            val color = selectedColor
-            val hexColor = String.format("#%06X", 0xFFFFFF and color)
-            viewModel.saveSubscription(
-                subscriptionName=binding.etSubscriptionName.text.toString(),
-                color=hexColor,
-                price=binding.etSubscriptionPrice.text.toString().toDouble(),
-                startDate=binding.etSubscriptionStartDate.text.toString(),
-                duration=binding.etSubscriptionDuration.text.toString().toInt(),
-                typeDuration=binding.etSubscriptionTypeDuration.text.toString()
-            )
-            viewModel.formData = MutableLiveData()
-            navController.navigate(R.id.action_addSubscriptionFragment_to_homeFragment)
+                val color = selectedColor
+                val hexColor = String.format("#%06X", 0xFFFFFF and color)
+                val selectedSubscription = viewModel.getSelectedSubscription()?.copy()
+                if (selectedSubscription != null) {
+                    viewModel.updateSubscription(
+                        subscriptionName = binding.etSubscriptionName.text.toString(),
+                        color = hexColor,
+                        price = binding.etSubscriptionPrice.text.toString().toDouble(),
+                        startDate = binding.etSubscriptionStartDate.text.toString(),
+                        duration = binding.etSubscriptionDuration.text.toString().toInt(),
+                        typeDuration = binding.etSubscriptionTypeDuration.text.toString()
+                    )
+                    viewModel.setSelectedSubscription(null)
+                } else {
+                    viewModel.saveSubscription(
+                        subscriptionName = binding.etSubscriptionName.text.toString(),
+                        color = hexColor,
+                        price = binding.etSubscriptionPrice.text.toString().toDouble(),
+                        startDate = binding.etSubscriptionStartDate.text.toString(),
+                        duration = binding.etSubscriptionDuration.text.toString().toInt(),
+                        typeDuration = binding.etSubscriptionTypeDuration.text.toString()
+                    )
+                }
+                viewModel.formData = MutableLiveData()
+                navController.navigate(R.id.action_addSubscriptionFragment_to_homeFragment)
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Not all fields are filled in", Toast.LENGTH_LONG).show()
             }
@@ -139,7 +156,7 @@ class AddSubscriptionFragment : DaggerFragment() {
         binding.etSubscriptionPrice.setText(formData?.price ?: "")
         binding.etSubscriptionStartDate.setText(formData?.startDate ?: "")
         binding.etSubscriptionDuration.setText(formData?.duration ?: "1")
-        binding.etSubscriptionTypeDuration.setText(formData?.typeDuration ?: "MONTHS")
+        binding.etSubscriptionTypeDuration.setText(formData?.typeDuration ?: "")
     }
 
     private fun saveFormData(){

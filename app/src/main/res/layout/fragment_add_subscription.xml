@@ -93,6 +93,7 @@
                 android:id="@+id/etSubscriptionCurrency"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:inputType="none"
                 android:singleLine="true"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -177,7 +178,6 @@
                 android:id="@+id/etSubscriptionTypeDuration"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="MONTHS"
                 android:singleLine="true"
                 android:inputType="none"/>
 
