@@ -89,6 +89,10 @@ class AppDatabaseRepository(private val database: AppDatabase)  {
     fun getCurrencyByCode(code: String): Currency {
         return CurrencyMapper.toDTO(currencyDao.getCurrencyByCode(code))
     }
+    fun getCurrenciesByCodes(listCodes: List<String>): List<Currency> {
+        return currencyDao.getCurrenciesByCodes(listCodes).map { CurrencyMapper.toDTO(it) }
+    }
+
 
 
 }

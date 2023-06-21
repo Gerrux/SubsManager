@@ -1,7 +1,6 @@
 package com.example.testsubsmanager.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.testsubsmanager.database.AppDatabaseRepository
@@ -9,22 +8,35 @@ import com.example.testsubsmanager.database.dto.Currency
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.services.currency.CurrencyRetrofitClient
+import com.example.testsubsmanager.ui.models.FormData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.math.floor
+import kotlin.math.log10
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 
 class MainViewModel @Inject constructor(private val repository: AppDatabaseRepository) : ViewModel() {
 
-    private val subscriptionsLiveData = MutableLiveData<List<Subscription>>()
     private var selectedCurrency: Currency? = null
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
+    var formData: MutableLiveData<FormData> = MutableLiveData()
+    private suspend fun setDisplayedCurrency(code: String): Currency{
+        return withContext(Dispatchers.IO) {
+            val currency = repository.getCurrencyByCode(code)
+            currency
+        }
+    }
 
     suspend fun getAllSubscriptions(): List<Subscription> {
         return withContext(Dispatchers.IO) {
@@ -81,55 +93,60 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     }
 
 
-    private fun getCurrencyByCode(code: String, callback: (Currency) -> Unit){
-        ioScope.launch {
-            repository.getCurrencyByCode(code)?.let {
-                mainScope.launch { callback(it) }
-            }
+    private suspend fun getCurrencyByCode(code: String): Currency{
+        return withContext(Dispatchers.IO) {
+            val currency = repository.getCurrencyByCode(code)
+            currency
         }
     }
 
     suspend fun fetchAndSaveCurrencyRates(date: String) {
         try {
-            val valCurs = CurrencyRetrofitClient.getApi().getCurrencyRates(date)
-            if (valCurs.isSuccessful) {
-                val currenciesCBRs = valCurs.body()!!.valutes
-                val listCurrencies = getAllCurrencies()
-                currenciesCBRs.forEach { currencyCBR ->
-                    val exchangeRate = currencyCBR.value.replace(",", ".").toDouble()
-                    val adjustedExchangeRate = exchangeRate / currencyCBR.nominal.toDouble()
-                    val existingCurrency = listCurrencies.find{ it.code == currencyCBR.charCode }
-                    if (existingCurrency != null) {
-                        val updatedCurrency = existingCurrency.copy(
-                            exchangeRate = adjustedExchangeRate,
-                            quoteDate = date
-                        )
-                        ioScope.launch {
-                            repository.updateCurrency(updatedCurrency)
+            if (getCurrencyByCode("RUB").quoteDate != date) {
+                val valCurs = CurrencyRetrofitClient.getApi().getCurrencyRates(date)
+                if (valCurs.isSuccessful) {
+                    val currenciesCBRs = valCurs.body()!!.valutes
+                    val listCurrencies = getAllCurrencies()
+                    currenciesCBRs.forEach { currencyCBR ->
+                        val exchangeRate = currencyCBR.value.replace(",", ".").toDouble()
+                        val adjustedExchangeRate = exchangeRate / currencyCBR.nominal.toDouble()
+                        val existingCurrency =
+                            listCurrencies.find { it.code == currencyCBR.charCode }
+                        if (existingCurrency != null) {
+                            val updatedCurrency = existingCurrency.copy(
+                                exchangeRate = adjustedExchangeRate,
+                                quoteDate = date
+                            )
+                            ioScope.launch {
+                                repository.updateCurrency(updatedCurrency)
+                            }
+                        } else {
+                            val newCurrency = Currency(
+                                code = currencyCBR.charCode,
+                                name = currencyCBR.name,
+                                exchangeRate = adjustedExchangeRate,
+                                quoteDate = date
+                            )
+                            ioScope.launch {
+                                mainScope.launch { repository.insertCurrency(newCurrency) }
+                            }
                         }
-                    } else {
-                        val newCurrency = Currency(
-                            code = currencyCBR.charCode,
-                            name = currencyCBR.name,
-                            exchangeRate = adjustedExchangeRate,
-                            quoteDate = date
-                        )
+                    }
+                    if (listCurrencies.find { it.code == "RUB" } == null) {
                         ioScope.launch {
-                            mainScope.launch { repository.insertCurrency(newCurrency) }
+                            mainScope.launch {
+                                repository.insertCurrency(
+                                    Currency(
+                                        code = "RUB",
+                                        name = "Russian Ruble",
+                                        exchangeRate = 1.0,
+                                        quoteDate = date
+                                    )
+                                )
+                            }
                         }
                     }
                 }
-                if (listCurrencies.find{ it.code == "RUB" } == null){
-                    ioScope.launch {
-                        mainScope.launch { repository.insertCurrency(Currency(
-                            code = "RUB",
-                            name = "Russian Ruble",
-                            exchangeRate = 1.0,
-                            quoteDate = date
-                        )) }
-                    }
-                }
-
             }
         } catch (e: Exception) {
             Log.e("SB", e.toString())
@@ -143,5 +160,97 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     fun getSelectedCurrency(): Currency? {
         return selectedCurrency
     }
+
+    fun getPrettyTotalMonthlyCost(subscriptions: List<Subscription>, displayedCurrency: String = "RUB"): String {
+        val totalCostResult = calculateTotalMonthlyCost(subscriptions)
+        val totalCost = totalCostResult.first
+        val isConverted = totalCostResult.second
+
+        var prettyTotalCost = if (totalCost != 0.0) {formatNumber(totalCost)} else 0
+
+        if (isConverted) {
+            prettyTotalCost = "≈$prettyTotalCost"
+        }
+
+        return "$prettyTotalCost $displayedCurrency"
+    }
+
+    private fun formatNumber(number: Double): String {
+        val suffixes = listOf("", "K", "M", "B", "T")
+        val numValue = floor(log10(number)).toInt()
+        val numIndex = (numValue / 3)
+
+        if (numIndex < 2) {
+            return number.toFixed(2).toString()
+        }
+
+        var formattedNumber = number / 10.0.pow((numIndex * 3).toDouble())
+        formattedNumber = if (formattedNumber % 1 != 0.0) {
+            formattedNumber.toFixed(2)
+        } else {
+            formattedNumber.toInt().toDouble() // Convert to Int if no decimal places
+        }
+
+        return "$formattedNumber ${suffixes[numIndex]}"
+    }
+
+    private fun Double.toFixed(decimalPlaces: Int): Double {
+        val factor = 10.0.pow(decimalPlaces.toDouble())
+        return (this * factor).roundToInt() / factor
+    }
+
+    private fun calculateTotalMonthlyCost(subscriptions: List<Subscription>, displayedCurrencyString: String = "RUB"): Pair<Double, Boolean> {
+        val displayedCurrency: Currency = runBlocking { setDisplayedCurrency(displayedCurrencyString) }
+        var totalCost = 0.0
+        var countConversions = 0
+        var isConverted = false
+        var exchangeRate = 1.0
+        if (subscriptions.isNotEmpty()){
+            for (subscription in subscriptions) {
+                if (subscription.currency != displayedCurrency) {
+                    exchangeRate = convertCurrency(subscription.currency, displayedCurrency)
+                    countConversions += 1
+                } else {
+                    exchangeRate = subscription.currency.exchangeRate
+                }
+
+                val subscriptionCostInDisplayCurrency = calculateSubscriptionMonthlyCostInDisplayCurrency(subscription, exchangeRate)
+                totalCost += subscriptionCostInDisplayCurrency
+            }
+            isConverted = (countConversions > 0)
+        }
+        return Pair(totalCost, isConverted)
+    }
+
+    private fun convertCurrency(sourceCurrency: Currency, targetCurrency: Currency): Double {
+        return sourceCurrency.exchangeRate / targetCurrency.exchangeRate
+    }
+
+    private fun calculateSubscriptionMonthlyCostInDisplayCurrency(subscription: Subscription, exchangeRate: Double): Double {
+        val subscriptionCost = calculateSubscriptionMonthlyCost(subscription)
+        return subscriptionCost * exchangeRate
+    }
+
+    private fun calculateSubscriptionMonthlyCost(subscription: Subscription): Double {
+        val durationInMonths = convertDurationToMonths(subscription.duration, subscription.typeDuration, subscription.startDate, subscription.renewalDate)
+        return subscription.price / durationInMonths
+    }
+
+    private fun convertDurationToMonths(duration: Int, typeDuration: TypeDuration, startDate: LocalDate, renewalDate: LocalDate): Double {
+        val daysInPeriod = ChronoUnit.DAYS.between(startDate, renewalDate)
+        val monthsInPeriod = ChronoUnit.MONTHS.between(startDate, renewalDate)
+        val remainingDays = daysInPeriod - (monthsInPeriod * 30) // Assuming 30 days in a month
+
+        var totalMonths = monthsInPeriod.toDouble()
+        totalMonths += remainingDays.toDouble() / 30 // Adjust for the remaining days
+
+        return when (typeDuration) {
+            TypeDuration.DAYS -> totalMonths * (duration.toDouble() / 30)
+            TypeDuration.WEEKS -> totalMonths * (duration.toDouble() / 4)
+            TypeDuration.MONTHS -> totalMonths * duration.toDouble()
+            TypeDuration.YEARS -> totalMonths * (duration.toDouble() * 12)
+        }
+    }
+
 
 }

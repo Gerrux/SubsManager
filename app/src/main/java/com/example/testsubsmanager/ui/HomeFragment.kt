@@ -37,9 +37,12 @@ class HomeFragment : DaggerFragment() {
         navController = Navigation.findNavController(view)
 
 
+
         adapter = SubscriptionListAdapter(emptyList())
         binding.listSubscriptions.layoutManager = LinearLayoutManager(requireContext())
         val subscriptions = runBlocking { viewModel.getAllSubscriptions() }
+        Log.e("SB grrx", "subscriptions: $subscriptions")
+        binding.amountSubscriptions.text = viewModel.getPrettyTotalMonthlyCost(subscriptions)
         adapter = SubscriptionListAdapter(subscriptions.sortedBy { it.nameSub })
         adapter.notifyDataSetChanged()
         binding.listSubscriptions.adapter = adapter

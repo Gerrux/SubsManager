@@ -21,4 +21,7 @@ interface CurrencyDao {
 
     @Query("SELECT * FROM currencies WHERE code = :code")
     fun getCurrencyByCode(code: String): CurrencyDatabaseModel
+
+    @Query("SELECT * FROM currencies WHERE code IN (:codes)")
+    fun getCurrenciesByCodes(codes: List<String>): List<CurrencyDatabaseModel>
 }

@@ -4,16 +4,20 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.testsubsmanager.R
 import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.databinding.FragmentAddSubscriptionBinding
+import com.example.testsubsmanager.ui.models.FormData
 import com.example.testsubsmanager.viewmodels.MainViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.android.support.DaggerFragment
@@ -44,7 +48,6 @@ class AddSubscriptionFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
         colorPicker = ColorPickerDialog.Builder()
             .setInitialColor(selectedColor)
             .setColorModel(ColorModel.RGB)
@@ -52,14 +55,13 @@ class AddSubscriptionFragment : DaggerFragment() {
             .setButtonOkText(android.R.string.ok)
             .setButtonCancelText(android.R.string.cancel)
             .onColorSelected { color: Int ->
-                selectedColor = color
-                binding.etSubscriptionColor.setColorFilter(selectedColor)
-                binding.etSubscriptionColor.imageTintList = ColorStateList.valueOf(selectedColor)
+                binding.etSubscriptionColor.setColorFilter(color)
+                binding.etSubscriptionColor.imageTintList = ColorStateList.valueOf(color)
             }
             .create()
         binding.etSubscriptionColor.setOnClickListener {
             showColorPickerDialog(selectedColor) {
-                selectedColor
+                selectedColor = it
             }
         }
 
@@ -87,6 +89,7 @@ class AddSubscriptionFragment : DaggerFragment() {
         }
 
         binding.etSubscriptionCurrency.setOnClickListener{
+            saveFormData()
             navController.navigate(R.id.action_addSubscriptionFragment_to_currencyListFragment)
         }
 
@@ -103,7 +106,10 @@ class AddSubscriptionFragment : DaggerFragment() {
         }
 
         binding.saveSubscriptionButton.setOnClickListener {
-            val hexColor = String.format("#%06X", 0xFFFFFF and selectedColor)
+            try {
+            val color = selectedColor
+            val hexColor = String.format("#%06X", 0xFFFFFF and color)
+            Log.e("SB grrx", hexColor)
             viewModel.saveSubscription(
                 subscriptionName=binding.etSubscriptionName.text.toString(),
                 color=hexColor,
@@ -112,8 +118,41 @@ class AddSubscriptionFragment : DaggerFragment() {
                 duration=binding.etSubscriptionDuration.text.toString().toInt(),
                 typeDuration=binding.etSubscriptionTypeDuration.text.toString()
             )
+            viewModel.formData = MutableLiveData()
             navController.navigate(R.id.action_addSubscriptionFragment_to_homeFragment)
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Not all fields are filled in", Toast.LENGTH_LONG).show()
+            }
         }
+        loadFormData()
+    }
+
+    private fun loadFormData(){
+        val formData = viewModel.formData.value
+        binding.etSubscriptionName.setText(formData?.subscriptionName ?: "")
+        val color = formData?.color
+        if (color != null){
+            selectedColor = Color.parseColor(color)
+            binding.etSubscriptionColor.setColorFilter(selectedColor)
+        } else {
+            selectedColor = Color.parseColor("#FFFFFF")
+        }
+        binding.etSubscriptionPrice.setText(formData?.price ?: "")
+        binding.etSubscriptionStartDate.setText(formData?.startDate ?: "")
+        binding.etSubscriptionDuration.setText(formData?.duration ?: "1")
+        binding.etSubscriptionTypeDuration.setText(formData?.typeDuration ?: "MONTHS")
+    }
+
+    private fun saveFormData(){
+        val formData = FormData(
+            subscriptionName = binding.etSubscriptionName.text.toString(),
+            color = String.format("#%06X", 0xFFFFFF and selectedColor),
+            price = binding.etSubscriptionPrice.text.toString(),
+            startDate = binding.etSubscriptionStartDate.text.toString(),
+            duration = binding.etSubscriptionDuration.text.toString(),
+            typeDuration = binding.etSubscriptionTypeDuration.text.toString()
+        )
+        viewModel.formData.value = formData
     }
 
     private fun View.hideKeyboard(): Boolean {

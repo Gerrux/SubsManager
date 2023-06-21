@@ -11,9 +11,9 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="11dp"
-        android:layout_marginEnd="23dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="0dp"
         android:orientation="horizontal">
 
@@ -35,8 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/header"
-        android:layout_marginLeft="23dp"
-        android:layout_marginRight="23dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/fragment_notification" />

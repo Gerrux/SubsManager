@@ -11,9 +11,9 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="11dp"
-        android:layout_marginEnd="23dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="0dp"
         android:orientation="horizontal">
 
@@ -45,17 +45,18 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/amount_subscriptions"
+        android:id="@+id/amount_subscriptions_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
-        android:layout_marginStart="23dp"
-        android:layout_marginEnd="23dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_below="@+id/header"
         android:orientation="vertical"
         android:gravity="center">
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/amount_subscriptions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/main_text"
@@ -74,9 +75,9 @@
         android:id="@+id/list_subscriptions_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/amount_subscriptions"
-        android:layout_marginStart="23dp"
-        android:layout_marginEnd="23dp"
+        android:layout_below="@+id/amount_subscriptions_container"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="0dp"
         android:orientation="horizontal">
 
@@ -112,8 +113,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/list_subscriptions_header"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="23dp"
-
-        android:layout_marginEnd="23dp" />
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingBottom="56dp"/>
 
 </RelativeLayout>

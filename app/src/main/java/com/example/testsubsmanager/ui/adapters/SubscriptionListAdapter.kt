@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.testsubsmanager.R
 import com.example.testsubsmanager.database.dto.Currency
 import com.example.testsubsmanager.database.dto.Subscription
+import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.Period
 
@@ -47,13 +48,15 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
         fun bind(subscription: Subscription, isSelected: Boolean) {
             val backgroundColor = Color.parseColor(subscription.color)
             val textColor = getContrastingColor(backgroundColor)
+            val decimalFormat = DecimalFormat("#.##")
+            val priceSubscription = decimalFormat.format(subscription.price)
             subscriptionNameTextView.text = subscription.nameSub
             subscriptionNameTextView.setTextColor(textColor)
-            subscriptionPriceTextView.text = "${subscription.price} ${subscription.currency.code}"
+            subscriptionPriceTextView.text = "$priceSubscription ${subscription.currency.code}"
             subscriptionPriceTextView.setTextColor(textColor)
             subscriptionRenewalDateTextView.text = getRenewalText(subscription.renewalDate)
             subscriptionRenewalDateTextView.setTextColor(textColor)
-            itemView.setBackgroundColor(backgroundColor)
+            itemView.background.setTint(backgroundColor)
             itemView.isSelected = isSelected
         }
 
@@ -62,10 +65,10 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
             val period = Period.between(currentDate, renewalDate)
 
             return when {
-                period.years > 0 -> "До оплаты осталось ${period.years} года"
-                period.months > 0 -> "До оплаты осталось ${period.months} месяца"
-                period.days > 0 -> "До оплаты осталось ${period.days} дня"
-                else -> "Сегодня оплатить"
+                period.years > 0 -> "Payment due in ${period.years} year${if (period.years > 1) "s" else ""}"
+                period.months > 0 -> "Payment due in ${period.months} month${if (period.months > 1) "s" else ""}"
+                period.days > 0 -> "Payment due in ${period.days} day${if (period.days > 1) "s" else ""}"
+                else -> "Payment due today"
             }
         }
 
