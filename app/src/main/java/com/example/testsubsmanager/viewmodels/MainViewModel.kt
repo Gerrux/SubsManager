@@ -2,7 +2,6 @@ package com.example.testsubsmanager.viewmodels
 
 import android.content.Context
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
@@ -11,7 +10,6 @@ import com.example.testsubsmanager.database.dto.Currency
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.services.currency.CurrencyRetrofitClient
-import com.example.testsubsmanager.ui.SettingsFragment
 import com.example.testsubsmanager.ui.models.FormData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,12 +29,12 @@ import kotlin.math.roundToInt
 
 class MainViewModel @Inject constructor(private val repository: AppDatabaseRepository) : ViewModel() {
 
+    private lateinit var displayedCurrency: Currency
     private var selectedCurrency: Currency? = null
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
     var formData: MutableLiveData<FormData> = MutableLiveData()
-    private lateinit var displayedCurrency: Currency
-    suspend fun setDisplayedCurrency(code: String) {
+    suspend fun setDisplayedCurrency(code: String){
         return withContext(Dispatchers.IO) {
             val currency = repository.getCurrencyByCode(code)
             displayedCurrency = currency
@@ -107,16 +105,36 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
 
     suspend fun fetchAndSaveCurrencyRates(date: String) {
         try {
-            if (getCurrencyByCode("RUB").quoteDate != date) {
+            val rubCurrency = try {
+                getCurrencyByCode("RUB")
+            } catch (_: Exception) {
+                val rubCurrency = Currency(
+                    code = "RUB",
+                    name = "Russian Ruble",
+                    exchangeRate = 1.0,
+                    quoteDate = "16/11/1988"
+                )
+                runBlocking {
+                    ioScope.launch {
+                        repository.insertCurrency(rubCurrency)
+                        setDisplayedCurrency("RUB")
+                    }
+                }
+                rubCurrency
+            }
+
+            if (rubCurrency.quoteDate != date) {
                 val valCurs = CurrencyRetrofitClient.getApi().getCurrencyRates(date)
+
                 if (valCurs.isSuccessful) {
                     val currenciesCBRs = valCurs.body()!!.valutes
                     val listCurrencies = getAllCurrencies()
+
                     currenciesCBRs.forEach { currencyCBR ->
                         val exchangeRate = currencyCBR.value.replace(",", ".").toDouble()
                         val adjustedExchangeRate = exchangeRate / currencyCBR.nominal.toDouble()
-                        val existingCurrency =
-                            listCurrencies.find { it.code == currencyCBR.charCode }
+                        val existingCurrency = listCurrencies.find { it.code == currencyCBR.charCode }
+
                         if (existingCurrency != null) {
                             val updatedCurrency = existingCurrency.copy(
                                 exchangeRate = adjustedExchangeRate,
@@ -133,21 +151,9 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                                 quoteDate = date
                             )
                             ioScope.launch {
-                                mainScope.launch { repository.insertCurrency(newCurrency) }
-                            }
-                        }
-                    }
-                    if (listCurrencies.find { it.code == "RUB" } == null) {
-                        ioScope.launch {
-                            mainScope.launch {
-                                repository.insertCurrency(
-                                    Currency(
-                                        code = "RUB",
-                                        name = "Russian Ruble",
-                                        exchangeRate = 1.0,
-                                        quoteDate = date
-                                    )
-                                )
+                                mainScope.launch {
+                                    repository.insertCurrency(newCurrency)
+                                }
                             }
                         }
                     }
@@ -157,6 +163,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             Log.e("SB", e.toString())
         }
     }
+
 
     fun setSelectedCurrency(currency: Currency) {
         selectedCurrency = currency

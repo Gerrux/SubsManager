@@ -8,13 +8,13 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/settings_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="11dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/back_settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,20 +22,26 @@
             android:text="@string/back_text"
             android:textColor="@color/white"
             app:icon="@drawable/back"
-            app:iconTint="@color/white" />
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/settings_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="20dp"
             android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:text="@string/settings"
-            android:textAppearance="@style/header_text" />
+            android:textAppearance="@style/header_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/back_settings_button"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:id="@+id/settings_container"

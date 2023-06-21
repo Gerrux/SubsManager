@@ -2,6 +2,7 @@ package com.example.testsubsmanager.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import com.example.testsubsmanager.R
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,15 +45,27 @@ class SplashScreenFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
-        GlobalScope.launch(Dispatchers.Main) {
-            val currentDate = SimpleDateFormat("dd/MM/yyyy").format(Date())
-            viewModel.fetchAndSaveCurrencyRates(currentDate)
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-            val currency = sharedPreferences.getString("currency", "RUB")
-            currency?.let { viewModel.setDisplayedCurrency(it) }
-            delay(2000)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val isFirstLoading = sharedPreferences.getBoolean("first_loading", true)
+        if (isFirstLoading) {
+            runBlocking {
+                withContext(Dispatchers.IO) {
+                    val currentDate = SimpleDateFormat("dd/MM/yyyy").format(Date())
+                    viewModel.fetchAndSaveCurrencyRates(currentDate)
+                }
+            }
+            sharedPreferences.edit().putBoolean("first_loading", false).apply()
             navController.navigate(R.id.action_splashScreenFragment_to_homeFragment)
+        } else {
+            GlobalScope.launch(Dispatchers.Main) {
+                val currentDate = SimpleDateFormat("dd/MM/yyyy").format(Date())
+                viewModel.fetchAndSaveCurrencyRates(currentDate)
+                delay(2000L)
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                val currency = sharedPreferences.getString("currency", "RUB")
+                currency?.let { viewModel.setDisplayedCurrency(it) }
+                navController.navigate(R.id.action_splashScreenFragment_to_homeFragment)
+            }
         }
 
     }
