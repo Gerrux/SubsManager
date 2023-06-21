@@ -31,6 +31,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
 
     private lateinit var displayedCurrency: Currency
     private var selectedCurrency: Currency? = null
+    private var selectedSubscription: Subscription? = null
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
     var formData: MutableLiveData<FormData> = MutableLiveData()
@@ -283,5 +284,12 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         }
     }
 
+    fun setSelectedSubscription(subscription: Subscription) {
+        selectedSubscription = subscription
+    }
+
+    fun getSelectedSubscription(): Subscription? {
+        return selectedSubscription
+    }
 
 }

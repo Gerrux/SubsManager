@@ -48,7 +48,6 @@ class CurrencyListFragment : DaggerFragment() {
         val currencies = runBlocking { viewModel.getAllCurrencies() }
         adapter = CurrencyListAdapter(currencies.sortedBy { it.code })
         adapter.setOnItemClickListener { currency ->
-            Log.e("SB", "Всё работает!")
             viewModel.setSelectedCurrency(currency)
             navController.navigate(R.id.action_currencyListFragment_to_addSubscriptionFragment)
         }

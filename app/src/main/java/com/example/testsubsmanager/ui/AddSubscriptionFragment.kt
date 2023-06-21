@@ -109,7 +109,6 @@ class AddSubscriptionFragment : DaggerFragment() {
             try {
             val color = selectedColor
             val hexColor = String.format("#%06X", 0xFFFFFF and color)
-            Log.e("SB grrx", hexColor)
             viewModel.saveSubscription(
                 subscriptionName=binding.etSubscriptionName.text.toString(),
                 color=hexColor,

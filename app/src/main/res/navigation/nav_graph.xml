@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_homeFragment_to_addSubscriptionFragment"
             app:destination="@id/addSubscriptionFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_subscriptionDetailFragment"
+            app:destination="@id/subscriptionDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -80,6 +83,18 @@
         tools:layout="@layout/fragment_currency_list" >
         <action
             android:id="@+id/action_currencyListFragment_to_addSubscriptionFragment"
+            app:destination="@id/addSubscriptionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/subscriptionDetailFragment"
+        android:name="com.example.testsubsmanager.ui.SubscriptionDetailFragment"
+        android:label="fragment_subscription_detail"
+        tools:layout="@layout/fragment_subscription_detail" >
+        <action
+            android:id="@+id/action_subscriptionDetailFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_subscriptionDetailFragment_to_addSubscriptionFragment"
             app:destination="@id/addSubscriptionFragment" />
     </fragment>
 </navigation>

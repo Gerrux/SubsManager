@@ -1,5 +1,6 @@
 package com.example.testsubsmanager.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -44,6 +45,10 @@ class HomeFragment : DaggerFragment() {
         binding.amountSubscriptions.text = viewModel.getPrettyTotalMonthlyCost(subscriptions)
         adapter = SubscriptionListAdapter(subscriptions.sortedBy { it.nameSub })
         adapter.notifyDataSetChanged()
+        adapter.setOnItemClickListener { subscription ->
+            viewModel.setSelectedSubscription(subscription)
+            navController.navigate(R.id.action_homeFragment_to_subscriptionDetailFragment)
+        }
         binding.listSubscriptions.adapter = adapter
 
         binding.settingsButton.setOnClickListener {

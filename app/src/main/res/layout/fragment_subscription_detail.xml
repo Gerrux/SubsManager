@@ -14,28 +14,135 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="10dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="30dp"
             android:background="@color/white"
             app:layout_constraintTop_toTopOf="parent">
-
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/subscriptionName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="25sp"
+                    style="@style/header_text"
                     android:fontFamily="@font/ibm_medium"
-                    android:textColor="@color/black"
-                    android:text="Yandex Plus"/>
+                    android:textColor="@color/black"/>
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/subscriptionPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/black"
-                    android:text="99 RUB"
                     android:textSize="30sp"/>
-
-
         </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/subscriptionInfoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:paddingStart="10dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subscriptionHeader">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/startDateSubscriptionContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteX="10dp">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvStartDateSubscription"
+                            style="@style/headline3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/subscription_start_date"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/startDateSubscription"
+                            style="@style/headline3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/durationSubscriptionContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/startDateSubscriptionContainer"
+                    android:layout_marginTop="20dp">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvDurationSubscription"
+                            style="@style/headline3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/every"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/durationTypeSubscription"
+                            style="@style/headline3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/durationSubscription"
+                            style="@style/headline3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/durationTypeSubscription"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="40dp"
+                    tools:layout_editor_absoluteX="10dp">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/backButton"
+                            style="@style/ButtonFormThemeSecondary"
+                            android:layout_width="140dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/back_text"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/editSubscriptionButton"
+                            style="@style/ButtonFormThemeMain"
+                            android:layout_width="140dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/edit_subscription"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
