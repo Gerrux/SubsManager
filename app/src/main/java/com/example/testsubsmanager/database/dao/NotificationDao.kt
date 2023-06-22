@@ -10,7 +10,7 @@ interface NotificationDao {
 
     @Transaction
     @Query("SELECT * FROM notifications")
-    fun getAllNotifications(): LiveData<List<NotificationDatabaseModel>>
+    fun getAllNotifications(): List<NotificationDatabaseModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(notification: NotificationDatabaseModel)
@@ -21,6 +21,9 @@ interface NotificationDao {
     @Delete
     suspend fun delete(notification: NotificationDatabaseModel)
 
+    @Query("SELECT MAX(notification_id) FROM notifications")
+    fun getLastIdNotification(): Int
+
     @Query("SELECT * FROM notifications WHERE notification_id = :notificationId")
-    fun getNotificationById(notificationId: Int): LiveData<NotificationDatabaseModel>
+    fun getNotificationById(notificationId: Int): NotificationDatabaseModel
 }

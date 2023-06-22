@@ -8,7 +8,7 @@ import java.time.LocalDate
 @Entity(tableName = "notifications")
 data class NotificationDatabaseModel(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "notification_id") val notificationId: Long,
+    @ColumnInfo(name = "notification_id") val notificationId: Int,
     val title: String,
     val message: String,
     @Embedded val subscription: SubscriptionDatabaseModel,

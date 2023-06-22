@@ -13,6 +13,7 @@ import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.mappers.CurrencyMapper
 import com.example.testsubsmanager.database.mappers.NotificationMapper
 import com.example.testsubsmanager.database.mappers.SubscriptionMapper
+import java.time.LocalDate
 
 class AppDatabaseRepository(private val database: AppDatabase)  {
 
@@ -51,10 +52,8 @@ class AppDatabaseRepository(private val database: AppDatabase)  {
         return SubscriptionMapper.toDTO(subscriptionDao.getSubscriptionById(id))
     }
 
-    fun getAllNotifications(): LiveData<List<Notification>> {
-        return Transformations.map(notificationDao.getAllNotifications()) { notificationList ->
-            notificationList.map { NotificationMapper.toDTO(it) }
-        }
+    fun getAllNotifications(): List<Notification> {
+        return notificationDao.getAllNotifications().map { NotificationMapper.toDTO(it) }
     }
 
     suspend fun insertNotification(notification: Notification) {
@@ -93,6 +92,13 @@ class AppDatabaseRepository(private val database: AppDatabase)  {
         return currencyDao.getCurrenciesByCodes(listCodes).map { CurrencyMapper.toDTO(it) }
     }
 
+    fun getLastIdNotification(): Int {
+        return notificationDao.getLastIdNotification()
+    }
+
+    fun getSubscriptionsByRenewalDate(renewalDate: LocalDate): List<Subscription> {
+        return subscriptionDao.getSubscriptionsByRenewalDate(renewalDate).map { SubscriptionMapper.toDTO(it) }
+    }
 
 
 }
