@@ -122,7 +122,7 @@
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/backButton"
                             style="@style/ButtonFormThemeSecondary"
-                            android:layout_width="140dp"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/back_text"
@@ -131,9 +131,21 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/deleteSubscriptionButton"
+                            style="@style/ButtonFormThemeDanger"
+                            android:layout_width="140dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/delete_subscription"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/editSubscriptionButton"
+                            app:layout_constraintStart_toEndOf="@+id/backButton"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/editSubscriptionButton"
                             style="@style/ButtonFormThemeMain"
-                            android:layout_width="140dp"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/edit_subscription"

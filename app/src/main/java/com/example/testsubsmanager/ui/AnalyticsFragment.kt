@@ -10,11 +10,20 @@ import android.widget.ImageView
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.testsubsmanager.R
+import com.example.testsubsmanager.databinding.FragmentAnalyticsBinding
+import com.example.testsubsmanager.databinding.FragmentCurrencyListBinding
+import com.example.testsubsmanager.ui.adapters.AnalyticsListAdapter
+import com.example.testsubsmanager.ui.adapters.CurrencyListAdapter
+import com.example.testsubsmanager.viewmodels.MainViewModel
 import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
 class AnalyticsFragment : DaggerFragment() {
     private lateinit var navController: NavController
-
+    private lateinit var adapter: AnalyticsListAdapter
+    private lateinit var binding: FragmentAnalyticsBinding
+    @Inject
+    lateinit var viewModel: MainViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

@@ -32,6 +32,16 @@
         <item name="colorControlHighlight">@color/white</item>
     </style>
 
+    <style name="ButtonFormThemeDanger">
+        <item name="android:textSize">20sp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/ibm_medium</item>
+        <item name="backgroundTint">@color/red</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>
+
     <style name="ButtonFormThemeMain">
         <item name="android:textSize">20sp</item>
         <item name="android:letterSpacing">0.01</item>
@@ -91,4 +101,5 @@
     </style>
 
 
+    <color name="red">#F53123</color>
 </resources>

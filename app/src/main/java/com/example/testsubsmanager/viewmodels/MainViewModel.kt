@@ -317,6 +317,17 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         }
 
     }
+
+    fun deleteSubscription(selectedSubscription: Subscription) {
+        runBlocking {
+            ioScope.launch {
+                mainScope.launch {
+                    repository.deleteSubscription(selectedSubscription)
+                }
+            }
+        }
+    }
+
     suspend fun getAllNotifications(): List<Notification> {
         return withContext(Dispatchers.IO) {
             val notifications = repository.getAllNotifications()

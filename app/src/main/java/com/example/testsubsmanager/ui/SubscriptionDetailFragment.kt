@@ -55,9 +55,15 @@ class SubscriptionDetailFragment : DaggerFragment() {
 
 
         binding.backButton.setOnClickListener {
-            navController.navigate(R.id.action_subscriptionDetailFragment_to_homeFragment)
             viewModel.setSelectedSubscription(null)
+            navController.navigate(R.id.action_subscriptionDetailFragment_to_homeFragment)
         }
+        binding.deleteSubscriptionButton.setOnClickListener {
+            viewModel.deleteSubscription(viewModel.getSelectedSubscription()!!)
+            viewModel.setSelectedSubscription(null)
+            navController.navigate(R.id.action_subscriptionDetailFragment_to_homeFragment)
+        }
+
         binding.editSubscriptionButton.setOnClickListener {
             val selectedSubscription = viewModel.getSelectedSubscription()!!
             val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
