@@ -1,5 +1,4 @@
 package com.example.testsubsmanager.database.dao
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.testsubsmanager.database.entity.SubscriptionDatabaseModel
 import java.time.LocalDate

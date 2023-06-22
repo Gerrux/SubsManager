@@ -9,14 +9,11 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.testsubsmanager.R
-import com.example.testsubsmanager.database.dto.Subscription
-import com.example.testsubsmanager.databinding.FragmentAddSubscriptionBinding
 import com.example.testsubsmanager.databinding.FragmentSubscriptionDetailBinding
 import com.example.testsubsmanager.ui.models.FormData
 import com.example.testsubsmanager.viewmodels.MainViewModel
 import dagger.android.support.DaggerFragment
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import javax.inject.Inject
 
 class SubscriptionDetailFragment : DaggerFragment() {

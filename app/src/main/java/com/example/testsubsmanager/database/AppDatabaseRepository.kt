@@ -1,9 +1,6 @@
 package com.example.testsubsmanager.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.room.Room
 import com.example.testsubsmanager.database.dao.CurrencyDao
 import com.example.testsubsmanager.database.dao.NotificationDao
 import com.example.testsubsmanager.database.dao.SubscriptionDao

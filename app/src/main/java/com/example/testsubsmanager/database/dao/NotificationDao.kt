@@ -1,7 +1,5 @@
 package com.example.testsubsmanager.database.dao
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.testsubsmanager.database.dto.Notification
 import com.example.testsubsmanager.database.entity.NotificationDatabaseModel
 
 
