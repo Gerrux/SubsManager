@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 import com.example.testsubsmanager.database.AppDatabaseRepository
 import com.example.testsubsmanager.database.dto.Currency
+import com.example.testsubsmanager.database.dto.Notification
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.services.currency.CurrencyRetrofitClient
@@ -315,6 +316,12 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             }
         }
 
+    }
+    suspend fun getAllNotifications(): List<Notification> {
+        return withContext(Dispatchers.IO) {
+            val notifications = repository.getAllNotifications()
+            notifications
+        }
     }
 
 }
