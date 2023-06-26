@@ -14,18 +14,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="11dp">
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back_settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#00FFFFFF"
-            android:text="@string/back_text"
-            android:textColor="@color/white"
-            app:icon="@drawable/back"
-            app:iconTint="@color/white"
+            android:layout_alignParentEnd="true"
+            app:srcCompat="@drawable/back"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            app:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck"/>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/settings_text"

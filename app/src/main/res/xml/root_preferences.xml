@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="General">
+        android:title="@string/general">
         <SwitchPreferenceCompat
             android:key="notifications"
-            android:title="Notifications"
-            android:summary="Enable or disable notifications" />
+            android:title="@string/notifications"
+            android:summary="@string/enable_or_disable_notifications" />
         <ListPreference
             android:key="currency"
-            android:title="Currency"
-            android:summary="Select your preferred currency"
+            android:title="@string/currency"
+            android:summary="@string/select_your_preferred_currency"
             android:entries="@array/currency_names"
             android:entryValues="@array/currency_codes"
             android:defaultValue="RUB" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Appearance">
+        android:title="@string/appearance">
         <ListPreference
             android:key="theme"
-            android:title="Theme"
-            android:summary="Choose your theme"
+            android:title="@string/theme"
+            android:summary="@string/choose_your_theme"
             android:entries="@array/theme_names"
             android:entryValues="@array/theme_values"
             android:defaultValue="light" />

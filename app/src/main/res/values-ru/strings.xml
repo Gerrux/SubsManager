@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SubsManager</string>
+    <string name="home">Главная</string>
+    <string name="your_subs">Ваши подписки</string>
+    <string name="analytics">Аналитика</string>
+    <string name="notifications">Уведомления</string>
+    <string name="settings">Настройки</string>
+    <string name="back_text">Назад</string>
+    <string name="edit_subscription">Изменить</string>
+    <string name="delete_subscription">Удалить</string>
+    <string name="about_developers_title">О разработчиках</string>
+    <string name="subscription_name">Название:</string>
+    <string name="subscription_price">Цена:</string>
+    <string name="subscription_color">Цвет</string>
+    <string name="subscription_start_date">Дата начала:</string>
+    <string name="subscription_end_date">Дата окончания:</string>
+    <string name="subscription_duration">Duration:</string>
+    <string name="subscription_type_duration">Type duration:</string>
+    <string name="every">Каждый</string>
+    <string name="subscription_currency">Валюта</string>
+    <string name="cancel">Отменить</string>
+    <string name="save">Сохранить</string>
+    <string name="monthly">Помесячно</string>
+    <string name="add_subscription_button">addSubscriptionButton</string>
+    <string name="not_filled">Не все поля заполнены</string>
+    <string name="select_startdate">Выберите дату начала</string>
+    <string name="no_notification">Уведомлений пока нет</string>
+    <string name="about_developers_text">Это приложение было разработано Ильей Калининым и Даниилом Покрышкиным.</string>
+    <string name="enable_or_disable_notifications">Включить или отключить уведомления</string>
+    <string name="currency">Валюта</string>
+    <string name="select_your_preferred_currency">Выберите предпочитаемую вами валюту</string>
+    <string name="theme">Тема</string>
+    <string name="choose_your_theme">Выберите свою тему</string>
+    <string name="general">Основные</string>
+    <string name="appearance">Внешние</string>
+</resources>

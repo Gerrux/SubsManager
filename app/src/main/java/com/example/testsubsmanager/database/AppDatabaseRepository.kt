@@ -12,7 +12,7 @@ import com.example.testsubsmanager.database.mappers.NotificationMapper
 import com.example.testsubsmanager.database.mappers.SubscriptionMapper
 import java.time.LocalDate
 
-class AppDatabaseRepository(private val database: AppDatabase)  {
+class AppDatabaseRepository(database: AppDatabase)  {
 
     private val subscriptionDao: SubscriptionDao = database.subscriptionDao()
     private val notificationDao: NotificationDao = database.notificationDao()
@@ -57,10 +57,6 @@ class AppDatabaseRepository(private val database: AppDatabase)  {
         notificationDao.insert(NotificationMapper.toEntity(notification))
     }
 
-    suspend fun updateNotification(notification: Notification) {
-        notificationDao.insert(NotificationMapper.toEntity(notification))
-    }
-
     suspend fun deleteNotification(notification: Notification) {
         notificationDao.insert(NotificationMapper.toEntity(notification))
     }
@@ -72,10 +68,6 @@ class AppDatabaseRepository(private val database: AppDatabase)  {
 
     suspend fun updateCurrency(currency: Currency) {
         currencyDao.update(CurrencyMapper.toEntity(currency))
-    }
-
-    suspend fun deleteCurrency(currency: Currency) {
-        currencyDao.delete(CurrencyMapper.toEntity(currency))
     }
 
     fun getAllCurrencies(): List<Currency> {

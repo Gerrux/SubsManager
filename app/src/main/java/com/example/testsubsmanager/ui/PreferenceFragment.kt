@@ -73,8 +73,8 @@ class PreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnShare
     private fun showAboutDevelopersDialog() {
         Log.d(TAG, "showAboutDevelopersDialog() called")
         val dialogBuilder = AlertDialog.Builder(requireContext())
-        dialogBuilder.setTitle("About Developers")
-        dialogBuilder.setMessage("This app was developed by Ilya Kalinin and Daniil Pokrishkin.")
+        dialogBuilder.setTitle(R.string.about_developers_title)
+        dialogBuilder.setMessage(R.string.about_developers_text)
         dialogBuilder.setPositiveButton("OK", null)
         dialogBuilder.show()
     }

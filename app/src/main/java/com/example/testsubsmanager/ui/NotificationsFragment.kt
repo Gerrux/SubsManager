@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.testsubsmanager.R
 import com.example.testsubsmanager.databinding.FragmentNotificationsListBinding
 import com.example.testsubsmanager.ui.adapters.NotificationListAdapter
 import com.example.testsubsmanager.viewmodels.MainViewModel
@@ -44,7 +45,7 @@ class NotificationsFragment : DaggerFragment() {
         if (notifications.isNotEmpty()) {
             adapter = NotificationListAdapter(notifications.sortedBy { it.date })
         } else {
-            binding.textNotificationsEmpty.text = "There are no notifications yet"
+            binding.textNotificationsEmpty.text = resources.getString(R.string.no_notification)
         }
 
     }

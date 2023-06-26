@@ -51,9 +51,14 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     }
 
     suspend fun getAllCurrencies(): List<Currency> {
+        val selectedCurrencies = listOf("RUB", "USD", "EUR", "TRY")
         return withContext(Dispatchers.IO) {
             val currencies = repository.getAllCurrencies()
-            currencies
+            val sortedCurrencies = currencies.sortedWith(compareBy({ selectedCurrencies.indexOf(it.code) }, { it.code }))
+            val selectedCurrenciesSorted = sortedCurrencies.filter { it.code in selectedCurrencies }
+            val remainingCurrenciesSorted = sortedCurrencies.filter { it.code !in selectedCurrencies }
+            val finalSortedCurrencies = selectedCurrenciesSorted + remainingCurrenciesSorted
+            finalSortedCurrencies
         }
     }
 
@@ -66,7 +71,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         val subCurrency: Currency = selectedCurrency!!
         val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
         val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
-        val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration.uppercase())
+        val typeDuration = TypeDuration.valueOf(typeDuration.uppercase())
+        val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration)
 
         val subscription = Subscription(
             nameSub = subscriptionName,
@@ -76,7 +82,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             startDate = subStartDate,
             renewalDate = renewalDate,
             duration = duration,
-            typeDuration = TypeDuration.valueOf(typeDuration.uppercase())
+            typeDuration = typeDuration
         )
 
         ioScope.launch {
@@ -84,17 +90,37 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         }
     }
 
-    private fun calculateRenewalDate(startDate: LocalDate, duration: Int, typeDuration: String): LocalDate {
-        var renewalDate: LocalDate = startDate
+    private fun calculateRenewalDate(startDate: LocalDate, duration: Int, typeDuration: TypeDuration): LocalDate {
+        val currentDate = LocalDate.now()
+        var paymentDueDate = startDate
 
-        when (typeDuration) {
-            "DAYS" -> renewalDate = startDate.plusDays(duration.toLong())
-            "WEEKS" -> renewalDate = startDate.plusWeeks(duration.toLong())
-            "MONTHS" -> renewalDate = startDate.plusMonths(duration.toLong())
-            "YEARS" -> renewalDate = startDate.plusYears(duration.toLong())
+        var numberOfPayments: Int = when (typeDuration) {
+            TypeDuration.DAYS -> ChronoUnit.DAYS.between(startDate, currentDate)
+                .toInt() / duration
+
+            TypeDuration.WEEKS -> ChronoUnit.WEEKS.between(startDate, currentDate)
+                .toInt() / duration
+
+            TypeDuration.MONTHS -> ChronoUnit.MONTHS.between(startDate, currentDate)
+                .toInt() / duration
+
+            TypeDuration.YEARS -> ChronoUnit.YEARS.between(startDate, currentDate)
+                .toInt() / duration
         }
 
-        return renewalDate
+        numberOfPayments += 1
+
+        paymentDueDate = when (typeDuration) {
+            TypeDuration.DAYS -> paymentDueDate.plusDays(duration.toLong() * numberOfPayments)
+
+            TypeDuration.WEEKS -> paymentDueDate.plusWeeks(duration.toLong() * numberOfPayments)
+
+            TypeDuration.MONTHS -> paymentDueDate.plusMonths(duration.toLong() * numberOfPayments)
+
+            TypeDuration.YEARS -> paymentDueDate.plusYears(duration.toLong() * numberOfPayments)
+        }
+
+        return paymentDueDate
     }
 
 
@@ -167,7 +193,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     }
 
 
-    fun setSelectedCurrency(currency: Currency) {
+    fun setSelectedCurrency(currency: Currency?) {
         selectedCurrency = currency
     }
 
@@ -297,7 +323,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         val subCurrency: Currency = selectedCurrency!!
         val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
         val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
-        val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration.uppercase())
+        val typeDuration = TypeDuration.valueOf(typeDuration.uppercase())
+        val renewalDate: LocalDate = calculateRenewalDate(subStartDate, duration, typeDuration)
 
         val updatedSubscription = Subscription(
             id = selectedSubscription!!.id,
@@ -308,7 +335,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             startDate = subStartDate,
             renewalDate = renewalDate,
             duration = duration,
-            typeDuration = TypeDuration.valueOf(typeDuration.uppercase()))
+            typeDuration = typeDuration)
 
         ioScope.launch {
             mainScope.launch {
