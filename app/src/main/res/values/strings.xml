@@ -22,4 +22,15 @@
     <string name="save">Save</string>
     <string name="monthly">Monthly</string>
     <string name="add_subscription_button">addSubscriptionButton</string>
+    <string name="not_filled">Not all fields are filled in</string>
+    <string name="select_startdate">SELECT A START DATE</string>
+    <string name="no_notification">There are no notifications yet</string>
+    <string name="about_developers_text">This app was developed by Ilya Kalinin and Daniil Pokrishkin.</string>
+    <string name="enable_or_disable_notifications">Enable or disable notifications</string>
+    <string name="currency">Currency</string>
+    <string name="select_your_preferred_currency">Select your preferred currency</string>
+    <string name="theme">Theme</string>
+    <string name="choose_your_theme">Choose your theme</string>
+    <string name="general">General</string>
+    <string name="appearance">Appearance</string>
 </resources>

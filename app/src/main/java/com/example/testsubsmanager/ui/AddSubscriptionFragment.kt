@@ -67,7 +67,7 @@ class AddSubscriptionFragment : DaggerFragment() {
         binding.etSubscriptionCurrency.setText(viewModel.getSelectedCurrency()?.code ?: "")
 
         val datePickerBuilder = MaterialDatePicker.Builder.datePicker()
-            .setTitleText("SELECT A DATE")
+            .setTitleText(R.string.select_startdate)
             .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
 
         val datePicker = datePickerBuilder.build()
@@ -123,6 +123,7 @@ class AddSubscriptionFragment : DaggerFragment() {
                         duration = binding.etSubscriptionDuration.text.toString().toInt(),
                         typeDuration = binding.etSubscriptionTypeDuration.text.toString()
                     )
+                    viewModel.setSelectedCurrency(null)
                     viewModel.setSelectedSubscription(null)
                 } else {
                     viewModel.saveSubscription(
@@ -137,7 +138,7 @@ class AddSubscriptionFragment : DaggerFragment() {
                 viewModel.formData = MutableLiveData()
                 navController.navigate(R.id.action_addSubscriptionFragment_to_homeFragment)
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Not all fields are filled in", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), R.string.not_filled, Toast.LENGTH_LONG).show()
             }
         }
         loadFormData()
