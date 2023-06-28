@@ -223,7 +223,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         val isConverted = totalCostResult.second
 
         var prettyTotalCost = if (totalCost != 0.0) {
-            formatNumber(totalCost)
+            formatNumber(totalCost, 2)
         } else 0
 
         if (isConverted) {
@@ -233,18 +233,18 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         return "$prettyTotalCost ${displayedCurrency.code}"
     }
 
-    private fun formatNumber(number: Double): String {
+    private fun formatNumber(number: Double, decimalPlaces: Int = 2): String {
         val suffixes = listOf("", "K", "M", "B", "T")
         val numValue = floor(log10(number)).toInt()
         val numIndex = (numValue / 3)
 
         if (numIndex < 2) {
-            return number.toFixed(2).toString()
+            return number.toFixed(decimalPlaces).toString()
         }
 
         var formattedNumber = number / 10.0.pow((numIndex * 3).toDouble())
         formattedNumber = if (formattedNumber % 1 != 0.0) {
-            formattedNumber.toFixed(2)
+            formattedNumber.toFixed(decimalPlaces)
         } else {
             formattedNumber.toInt().toDouble() // Convert to Int if no decimal places
         }
@@ -419,20 +419,37 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             val listSubscriptionsByMonth =
                 getListSubscriptionByMonth(selectedDate, allSubscriptions)
             val amountByMonth = calculateAmount(listSubscriptionsByMonth)
-
+            val stringAmountByMonth = "${formatNumber(amountByMonth, 2)} ${displayedCurrency.code}"
             val analyticsModel = AnalyticsModel(
                 month = month,
+                amountString = stringAmountByMonth,
                 amount = amountByMonth,
+                height = 0,
                 listSubscription = listSubscriptionsByMonth
             )
             listAnalytics.add(i, analyticsModel)
             i++
         }
-        listAnalyticModel = listAnalytics
+        listAnalyticModel = fillHeightAnalyticsModels(listAnalytics)
         selectedAnalyticsModel = listAnalyticModel[1]
     }
 
-    private fun calculateAmount(subscriptions: List<Subscription>): String {
+    private fun fillHeightAnalyticsModels(listAnalytics: List<AnalyticsModel>): List<AnalyticsModel>{
+        val minAmount = listAnalytics.minByOrNull { it.amount }!!.amount
+        val maxAmount = listAnalytics.maxByOrNull { it.amount }!!.amount
+        if (minAmount == maxAmount && maxAmount != 0.0) {
+            for (model in listAnalytics) {
+                model.height = 100
+            }
+        } else if (maxAmount != 0.0) {
+            for (model in listAnalytics) {
+                model.height = ((model.amount / (maxAmount - minAmount)) * 90 + 10).toInt()
+            }
+        }
+        return listAnalytics
+    }
+
+    private fun calculateAmount(subscriptions: List<Subscription>): Double {
         var totalCostResult = 0.0
         if (subscriptions.isNotEmpty()) {
             for (subscription in subscriptions) {
@@ -442,9 +459,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                 )
             }
         }
-        val totalCost = totalCostResult.toInt()
 
-        return "$totalCost ${displayedCurrency.code}"
+        return totalCostResult
     }
 
     private fun getListSubscriptionByMonth(

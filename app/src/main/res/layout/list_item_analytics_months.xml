@@ -3,16 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="40dp"
+    android:focusable="true"
+    android:clickable="true"
     android:layout_marginRight="5dp"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/height_column_month"
+        android:id="@+id/top_bg_capsule"
         android:layout_width="0dp"
-        android:layout_height="10dp"
-        android:background="@drawable/right_layout_bg"
-        android:backgroundTint="@color/primary_dark"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:background="@drawable/analytics_selector"
         app:layout_constraintBottom_toTopOf="@+id/current_month_amount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -23,8 +25,7 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:layout_marginBottom="-25dp"
-        android:background="@drawable/left_layout_bg"
-        android:backgroundTint="@color/primary_dark"
+        android:background="@drawable/analytics_selector"
         android:fontFamily="@font/ibm_regular"
         android:gravity="center"
         android:rotation="-90"
@@ -43,8 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="10dp"
         android:rotation="-180"
-        android:background="@drawable/right_layout_bg"
-        android:backgroundTint="@color/primary_dark"
+        android:background="@drawable/analytics_selector"
         app:layout_constraintBottom_toTopOf="@+id/analytics_month_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -1,12 +1,14 @@
 package com.example.testsubsmanager.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testsubsmanager.R
 import com.example.testsubsmanager.database.dto.Subscription
@@ -23,7 +25,7 @@ class AnalyticsListAdapter(var analyticsModels: List<AnalyticsModel>) :
     inner class AnalyticViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val analyticsMonthTitle: TextView = itemView.findViewById(R.id.analytics_month_title)
         private val currentMonthAmount: TextView = itemView.findViewById(R.id.current_month_amount)
-        private val height_column_month: ImageView = itemView.findViewById(R.id.height_column_month)
+        private val topBgCapsule: ImageView = itemView.findViewById(R.id.top_bg_capsule)
 
         init {
             itemView.setOnClickListener {
@@ -42,12 +44,16 @@ class AnalyticsListAdapter(var analyticsModels: List<AnalyticsModel>) :
         @SuppressLint("SetTextI18n")
         fun bind(analyticsModel: AnalyticsModel, isSelected: Boolean) {
             analyticsMonthTitle.text = analyticsModel.getAbbreviatedMonthString().capitalize(Locale.ROOT)
-            currentMonthAmount.text = analyticsModel.amount
+            currentMonthAmount.text = analyticsModel.amountString
+            val layoutParams = topBgCapsule.layoutParams
+            layoutParams.height = convertDpToPixels(topBgCapsule.context, analyticsModel.height)
+            topBgCapsule.layoutParams = layoutParams
             itemView.isSelected = isSelected
         }
     }
 
-
+    fun convertDpToPixels(context: Context, dp: Int) =
+        (dp * context.resources.displayMetrics.density).toInt()
 
     fun setOnItemClickListener(listener: (AnalyticsModel) -> Unit) {
         onItemClickListener = listener

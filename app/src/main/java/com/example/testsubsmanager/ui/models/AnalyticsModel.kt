@@ -4,7 +4,9 @@ import com.example.testsubsmanager.database.dto.Subscription
 
 class AnalyticsModel(
     val month: String,
-    val amount: String,
+    val amountString: String,
+    val amount: Double,
+    var height: Int,
     val listSubscription: List<Subscription>
 ) {
     fun getAbbreviatedMonthString(): String {
