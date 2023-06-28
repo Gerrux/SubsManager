@@ -102,7 +102,6 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
                     paymentDueDate.plusYears(duration.first.toLong() * numberOfPayments)
             }
             val period = Period.between(currentDate, paymentDueDate)
-            Log.d("GRRX", "$period $paymentDueDate")
             return when {
                 period.years > 0 -> "Payment due in ${period.years} year${if (period.years > 1) "s" else ""}"
                 period.months > 0 -> "Payment due in ${period.months} month${if (period.months > 1) "s" else ""}"

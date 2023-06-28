@@ -11,15 +11,18 @@ import com.example.testsubsmanager.database.dto.Notification
 import com.example.testsubsmanager.database.dto.Subscription
 import com.example.testsubsmanager.database.dto.TypeDuration
 import com.example.testsubsmanager.services.currency.CurrencyRetrofitClient
+import com.example.testsubsmanager.ui.models.AnalyticsModel
 import com.example.testsubsmanager.ui.models.FormData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.floor
@@ -28,15 +31,17 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 
-class MainViewModel @Inject constructor(private val repository: AppDatabaseRepository) : ViewModel() {
-
+class MainViewModel @Inject constructor(private val repository: AppDatabaseRepository) :
+    ViewModel() {
     private lateinit var displayedCurrency: Currency
     private var selectedCurrency: Currency? = null
     private var selectedSubscription: Subscription? = null
     private val ioScope = CoroutineScope(Dispatchers.IO)
     private val mainScope = CoroutineScope(Dispatchers.Main)
     var formData: MutableLiveData<FormData> = MutableLiveData()
-    suspend fun setDisplayedCurrency(code: String){
+    private lateinit var listAnalyticModel: List<AnalyticsModel>
+    private lateinit var selectedAnalyticsModel: AnalyticsModel
+    suspend fun setDisplayedCurrency(code: String) {
         return withContext(Dispatchers.IO) {
             val currency = repository.getCurrencyByCode(code)
             displayedCurrency = currency
@@ -54,20 +59,26 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         val selectedCurrencies = listOf("RUB", "USD", "EUR", "TRY")
         return withContext(Dispatchers.IO) {
             val currencies = repository.getAllCurrencies()
-            val sortedCurrencies = currencies.sortedWith(compareBy({ selectedCurrencies.indexOf(it.code) }, { it.code }))
+            val sortedCurrencies = currencies.sortedWith(
+                compareBy({ selectedCurrencies.indexOf(it.code) },
+                    { it.code })
+            )
             val selectedCurrenciesSorted = sortedCurrencies.filter { it.code in selectedCurrencies }
-            val remainingCurrenciesSorted = sortedCurrencies.filter { it.code !in selectedCurrencies }
+            val remainingCurrenciesSorted =
+                sortedCurrencies.filter { it.code !in selectedCurrencies }
             val finalSortedCurrencies = selectedCurrenciesSorted + remainingCurrenciesSorted
             finalSortedCurrencies
         }
     }
 
-    fun saveSubscription(subscriptionName: String,
-                         color: String = "#FFFFFF",
-                         price: Double = 0.0,
-                         startDate: String = LocalDate.now().toString(),
-                         duration: Int = 1,
-                         typeDuration: String = "Months") {
+    fun saveSubscription(
+        subscriptionName: String,
+        color: String = "#FFFFFF",
+        price: Double = 0.0,
+        startDate: String = LocalDate.now().toString(),
+        duration: Int = 1,
+        typeDuration: String = "Months"
+    ) {
         val subCurrency: Currency = selectedCurrency!!
         val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
         val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
@@ -90,7 +101,11 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         }
     }
 
-    private fun calculateRenewalDate(startDate: LocalDate, duration: Int, typeDuration: TypeDuration): LocalDate {
+    private fun calculateRenewalDate(
+        startDate: LocalDate,
+        duration: Int,
+        typeDuration: TypeDuration
+    ): LocalDate {
         val currentDate = LocalDate.now()
         var paymentDueDate = startDate
 
@@ -124,7 +139,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
     }
 
 
-    private suspend fun getCurrencyByCode(code: String): Currency{
+    private suspend fun getCurrencyByCode(code: String): Currency {
         return withContext(Dispatchers.IO) {
             val currency = repository.getCurrencyByCode(code)
             currency
@@ -161,7 +176,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                     currenciesCBRs.forEach { currencyCBR ->
                         val exchangeRate = currencyCBR.value.replace(",", ".").toDouble()
                         val adjustedExchangeRate = exchangeRate / currencyCBR.nominal.toDouble()
-                        val existingCurrency = listCurrencies.find { it.code == currencyCBR.charCode }
+                        val existingCurrency =
+                            listCurrencies.find { it.code == currencyCBR.charCode }
 
                         if (existingCurrency != null) {
                             val updatedCurrency = existingCurrency.copy(
@@ -206,7 +222,9 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         val totalCost = totalCostResult.first
         val isConverted = totalCostResult.second
 
-        var prettyTotalCost = if (totalCost != 0.0) {formatNumber(totalCost)} else 0
+        var prettyTotalCost = if (totalCost != 0.0) {
+            formatNumber(totalCost)
+        } else 0
 
         if (isConverted) {
             prettyTotalCost = "≈$prettyTotalCost"
@@ -245,7 +263,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         var countConversions = 0
         var isConverted = false
         var exchangeRate = 1.0
-        if (subscriptions.isNotEmpty()){
+        if (subscriptions.isNotEmpty()) {
             for (subscription in subscriptions) {
                 if (subscription.currency != displayedCurrency) {
                     exchangeRate = convertCurrency(subscription.currency, displayedCurrency)
@@ -254,7 +272,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                     exchangeRate = subscription.currency.exchangeRate
                 }
 
-                val subscriptionCostInDisplayCurrency = calculateSubscriptionMonthlyCostInDisplayCurrency(subscription, exchangeRate)
+                val subscriptionCostInDisplayCurrency =
+                    calculateSubscriptionMonthlyCostInDisplayCurrency(subscription, exchangeRate)
                 totalCost += subscriptionCostInDisplayCurrency
             }
             isConverted = (countConversions > 0)
@@ -266,17 +285,33 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         return sourceCurrency.exchangeRate / targetCurrency.exchangeRate
     }
 
-    private fun calculateSubscriptionMonthlyCostInDisplayCurrency(subscription: Subscription, exchangeRate: Double): Double {
+    private fun calculateSubscriptionMonthlyCostInDisplayCurrency(
+        subscription: Subscription,
+        exchangeRate: Double
+    ): Double {
         val subscriptionCost = calculateSubscriptionMonthlyCost(subscription)
         return subscriptionCost * exchangeRate
     }
 
     private fun calculateSubscriptionMonthlyCost(subscription: Subscription): Double {
-        val durationInMonths = convertDurationToMonths(subscription.duration, subscription.typeDuration, subscription.startDate, subscription.renewalDate)
+        if (subscription.duration == 1 && subscription.typeDuration == TypeDuration.MONTHS) {
+            return subscription.price
+        }
+        val durationInMonths = convertDurationToMonths(
+            subscription.duration,
+            subscription.typeDuration,
+            subscription.startDate,
+            subscription.renewalDate
+        )
         return subscription.price / durationInMonths
     }
 
-    private fun convertDurationToMonths(duration: Int, typeDuration: TypeDuration, startDate: LocalDate, renewalDate: LocalDate): Double {
+    private fun convertDurationToMonths(
+        duration: Int,
+        typeDuration: TypeDuration,
+        startDate: LocalDate,
+        renewalDate: LocalDate
+    ): Double {
         val daysInPeriod = ChronoUnit.DAYS.between(startDate, renewalDate)
         val monthsInPeriod = ChronoUnit.MONTHS.between(startDate, renewalDate)
         val remainingDays = daysInPeriod - (monthsInPeriod * 30) // Assuming 30 days in a month
@@ -300,12 +335,14 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                 "notifications" -> {
                     // Handle the change in the "notifications" setting
                 }
+
                 "theme" -> {
                     // Handle the change in the "theme" setting
                 }
+
                 "currency" -> {
                     val value = sharedPreferences.getString(key, "RUB")
-                    runBlocking{ value?.let { setDisplayedCurrency(it) } }
+                    runBlocking { value?.let { setDisplayedCurrency(it) } }
                 }
             }
         }
@@ -319,7 +356,14 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
         return selectedSubscription
     }
 
-    fun updateSubscription(subscriptionName: String, color: String, price: Double, startDate: String, duration: Int, typeDuration: String) {
+    fun updateSubscription(
+        subscriptionName: String,
+        color: String,
+        price: Double,
+        startDate: String,
+        duration: Int,
+        typeDuration: String
+    ) {
         val subCurrency: Currency = selectedCurrency!!
         val formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH)
         val subStartDate: LocalDate = LocalDate.parse(startDate, formatter)
@@ -335,7 +379,8 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             startDate = subStartDate,
             renewalDate = renewalDate,
             duration = duration,
-            typeDuration = typeDuration)
+            typeDuration = typeDuration
+        )
 
         ioScope.launch {
             mainScope.launch {
@@ -360,6 +405,113 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
             val notifications = repository.getAllNotifications()
             notifications
         }
+    }
+
+
+    suspend fun fillListAnalytics() {
+        delay(2000)
+        val listAnalytics = mutableListOf<AnalyticsModel>()
+        val allSubscriptions = withContext(Dispatchers.IO) { repository.getAllSubscriptions() }
+        var i = 0
+        while (i != 12) {
+            val selectedDate = LocalDate.now().plusMonths(1).minusMonths(i.toLong())
+            val month = getMonthString(selectedDate)
+            val listSubscriptionsByMonth =
+                getListSubscriptionByMonth(selectedDate, allSubscriptions)
+            val amountByMonth = calculateAmount(listSubscriptionsByMonth)
+
+            val analyticsModel = AnalyticsModel(
+                month = month,
+                amount = amountByMonth,
+                listSubscription = listSubscriptionsByMonth
+            )
+            listAnalytics.add(i, analyticsModel)
+            i++
+        }
+        listAnalyticModel = listAnalytics
+        selectedAnalyticsModel = listAnalyticModel[1]
+    }
+
+    private fun calculateAmount(subscriptions: List<Subscription>): String {
+        var totalCostResult = 0.0
+        if (subscriptions.isNotEmpty()) {
+            for (subscription in subscriptions) {
+                totalCostResult += subscription.price * convertCurrency(
+                    subscription.currency,
+                    displayedCurrency
+                )
+            }
+        }
+        val totalCost = totalCostResult.toInt()
+
+        return "$totalCost ${displayedCurrency.code}"
+    }
+
+    private fun getListSubscriptionByMonth(
+        date: LocalDate,
+        subscriptions: List<Subscription>
+    ): List<Subscription> {
+        val subscriptionsWithPayments = mutableListOf<Subscription>()
+        val selectedStartDate = date.with(TemporalAdjusters.firstDayOfMonth())
+        val selectedEndDate = date.with(TemporalAdjusters.lastDayOfMonth())
+
+        if (subscriptions.isNotEmpty()) {
+            for (subscription in subscriptions) {
+                val startDate = subscription.startDate
+
+                val numberOfPayments: Int = when (subscription.typeDuration) {
+                    TypeDuration.DAYS -> ChronoUnit.DAYS.between(startDate, selectedEndDate)
+                        .toInt() / subscription.duration
+
+                    TypeDuration.WEEKS -> ChronoUnit.WEEKS.between(startDate, selectedEndDate)
+                        .toInt() / subscription.duration
+
+                    TypeDuration.MONTHS -> ChronoUnit.MONTHS.between(startDate, selectedEndDate)
+                        .toInt() / subscription.duration
+
+                    TypeDuration.YEARS -> ChronoUnit.YEARS.between(startDate, selectedEndDate)
+                        .toInt() / subscription.duration
+                }
+                if (subscription.startDate in selectedStartDate..selectedEndDate) {
+                    val analyticsSubscription = subscription.copy()
+                    analyticsSubscription.renewalDate = analyticsSubscription.startDate
+                    subscriptionsWithPayments.add(analyticsSubscription)
+                }
+
+                if (numberOfPayments > 0) {
+                    // Calculate the end date based on the duration and type of duration
+                    val calculatedRenewalDate = when (subscription.typeDuration) {
+                        TypeDuration.DAYS -> startDate.plusDays(subscription.duration.toLong() * numberOfPayments)
+                        TypeDuration.WEEKS -> startDate.plusWeeks(subscription.duration.toLong() * numberOfPayments)
+                        TypeDuration.MONTHS -> startDate.plusMonths(subscription.duration.toLong() * numberOfPayments)
+                        TypeDuration.YEARS -> startDate.plusYears(subscription.duration.toLong() * numberOfPayments)
+                    }
+                    if (calculatedRenewalDate in selectedStartDate..selectedEndDate) {
+                        val analyticsSubscription = subscription.copy()
+                        analyticsSubscription.renewalDate = calculatedRenewalDate
+                        subscriptionsWithPayments.add(analyticsSubscription)
+                    }
+                }
+            }
+        }
+        return subscriptionsWithPayments
+    }
+
+    private fun getMonthString(date: LocalDate): String {
+        val formatter = DateTimeFormatter.ofPattern("LLLL")
+        return date.format(formatter)
+    }
+
+    fun setSelectedMonth(analyticsModel: AnalyticsModel) {
+        selectedAnalyticsModel = analyticsModel
+    }
+
+    fun getSelectedMonth(): AnalyticsModel {
+        return selectedAnalyticsModel
+    }
+
+    fun getListAnalyticModel(): List<AnalyticsModel> {
+        return listAnalyticModel
     }
 
 }

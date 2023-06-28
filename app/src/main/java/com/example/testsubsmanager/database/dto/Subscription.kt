@@ -10,7 +10,7 @@ data class Subscription(
     val currency: Currency,
     val startDate: LocalDate,
     val endDate: LocalDate? = null,
-    val renewalDate: LocalDate,
+    var renewalDate: LocalDate,
     val duration: Int,
     val typeDuration: TypeDuration,
 )

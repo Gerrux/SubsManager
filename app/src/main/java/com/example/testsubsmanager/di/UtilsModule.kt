@@ -21,5 +21,4 @@ class UtilsModule {
     @Singleton
     @Provides
     fun provideViewModel(repository: AppDatabaseRepository): MainViewModel = MainViewModel(repository)
-
 }
