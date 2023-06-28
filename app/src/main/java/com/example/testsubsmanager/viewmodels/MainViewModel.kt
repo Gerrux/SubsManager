@@ -269,7 +269,7 @@ class MainViewModel @Inject constructor(private val repository: AppDatabaseRepos
                     exchangeRate = convertCurrency(subscription.currency, displayedCurrency)
                     countConversions += 1
                 } else {
-                    exchangeRate = subscription.currency.exchangeRate
+                    exchangeRate = 1.0
                 }
 
                 val subscriptionCostInDisplayCurrency =
