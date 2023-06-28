@@ -11,9 +11,7 @@
     <string name="about_developers_title">About developers</string>
     <string name="subscription_name">Name:</string>
     <string name="subscription_price">Price:</string>
-    <string name="subscription_color">Color</string>
     <string name="subscription_start_date">Start date:</string>
-    <string name="subscription_end_date">End date:</string>
     <string name="subscription_duration">Duration:</string>
     <string name="subscription_type_duration">Type duration:</string>
     <string name="every">Every</string>
@@ -33,4 +31,26 @@
     <string name="choose_your_theme">Choose your theme</string>
     <string name="general">General</string>
     <string name="appearance">Appearance</string>
+    <string name="payment_due_today">Payment due today</string>
+    <plurals name="payment_due_days">
+        <item quantity="zero">%d days left for payment</item>
+        <item quantity="one">%d day left for payment</item>
+        <item quantity="few">%d days left for payment</item>
+        <item quantity="many">%d days left for payment</item>
+        <item quantity="other">%d days left for payment</item>
+    </plurals>
+    <plurals name="payment_due_months">
+        <item quantity="zero">%d months left for payment</item>
+        <item quantity="one">%d month left for payment</item>
+        <item quantity="few">%d months left for payment</item>
+        <item quantity="many">%d months left for payment</item>
+        <item quantity="other">%d months left for payment</item>
+    </plurals>
+    <plurals name="payment_due_years">
+        <item quantity="zero">%d year left for payment</item>
+        <item quantity="one">%d year left for payment</item>
+        <item quantity="few">%d years left for payment</item>
+        <item quantity="many">%d years left for payment</item>
+        <item quantity="other">%d years left for payment</item>
+    </plurals>
 </resources>

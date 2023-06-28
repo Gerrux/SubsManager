@@ -61,6 +61,7 @@ class SplashScreenFragment : DaggerFragment() {
                 val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
                 val currency = sharedPreferences.getString("currency", "RUB")
                 currency?.let { viewModel.setDisplayedCurrency(it) }
+                viewModel.fillListAnalytics()
                 navController.navigate(R.id.action_splashScreenFragment_to_homeFragment)
             }
         }

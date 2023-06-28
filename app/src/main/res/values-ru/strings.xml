@@ -12,9 +12,7 @@
     <string name="about_developers_title">О разработчиках</string>
     <string name="subscription_name">Название:</string>
     <string name="subscription_price">Цена:</string>
-    <string name="subscription_color">Цвет</string>
     <string name="subscription_start_date">Дата начала:</string>
-    <string name="subscription_end_date">Дата окончания:</string>
     <string name="subscription_duration">Duration:</string>
     <string name="subscription_type_duration">Type duration:</string>
     <string name="every">Каждый</string>
@@ -34,4 +32,26 @@
     <string name="choose_your_theme">Выберите свою тему</string>
     <string name="general">Основные</string>
     <string name="appearance">Внешние</string>
+    <string name="payment_due_today">Оплата сегодня</string>
+    <plurals name="payment_due_days">
+        <item quantity="zero">Оплата через %d дней</item>
+        <item quantity="one">Оплата через %d день</item>
+        <item quantity="few">Оплата через %d дня</item>
+        <item quantity="many">Оплата через %d дней</item>
+        <item quantity="other">Оплата через %d дней</item>
+    </plurals>
+    <plurals name="payment_due_months">
+        <item quantity="zero">Оплата через %d месяцев</item>
+        <item quantity="one">Оплата через %d месяц</item>
+        <item quantity="few">Оплата через %d месяца</item>
+        <item quantity="many">Оплата через %d месяцев</item>
+        <item quantity="other">Оплата через %d месяцев</item>
+    </plurals>
+    <plurals name="payment_due_years">
+        <item quantity="zero">Оплата через %d год</item>
+        <item quantity="one">Оплата через %d год</item>
+        <item quantity="few">Оплата через %d года</item>
+        <item quantity="many">Оплата через %d лет</item>
+        <item quantity="other">Оплата через %d год</item>
+    </plurals>
 </resources>

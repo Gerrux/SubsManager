@@ -1,12 +1,14 @@
 package com.example.testsubsmanager.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testsubsmanager.R
 import com.example.testsubsmanager.database.dto.Subscription
@@ -15,6 +17,7 @@ import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.Period
 import java.time.temporal.ChronoUnit
+import java.util.Locale
 
 class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
     RecyclerView.Adapter<SubscriptionListAdapter.SubscriptionViewHolder>() {
@@ -47,7 +50,7 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
 
 
         @SuppressLint("SetTextI18n")
-        fun bind(subscription: Subscription, isSelected: Boolean) {
+        fun bind(subscription: Subscription, isSelected: Boolean, resources: Resources) {
             val backgroundColor = Color.parseColor(subscription.color)
             val textColor = getContrastingColor(backgroundColor)
             val decimalFormat = DecimalFormat("#.##")
@@ -58,7 +61,8 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
             subscriptionPriceTextView.setTextColor(textColor)
             subscriptionRenewalDateTextView.text = getRenewalDateText(
                 subscription.startDate,
-                Pair(subscription.duration, subscription.typeDuration)
+                Pair(subscription.duration, subscription.typeDuration),
+                resources
             )
             subscriptionRenewalDateTextView.setTextColor(textColor)
             itemView.background.setTint(backgroundColor)
@@ -67,7 +71,8 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
 
         private fun getRenewalDateText(
             startDate: LocalDate,
-            duration: Pair<Int, TypeDuration>
+            duration: Pair<Int, TypeDuration>,
+            resources: Resources
         ): String {
             val currentDate = LocalDate.now()
             var paymentDueDate = startDate
@@ -102,13 +107,13 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
                     paymentDueDate.plusYears(duration.first.toLong() * numberOfPayments)
             }
             val period = Period.between(currentDate, paymentDueDate)
-            Log.d("GRRX", "$period $paymentDueDate")
             return when {
-                period.years > 0 -> "Payment due in ${period.years} year${if (period.years > 1) "s" else ""}"
-                period.months > 0 -> "Payment due in ${period.months} month${if (period.months > 1) "s" else ""}"
-                period.days > 0 -> "Payment due in ${period.days} day${if (period.days > 1) "s" else ""}"
-                else -> "Payment due today"
+                    period.years > 0 -> resources.getQuantityString(R.plurals.payment_due_years, period.years, period.years)
+                    period.months > 0 -> resources.getQuantityString(R.plurals.payment_due_months, period.months, period.months)
+                    period.days > 0 -> resources.getQuantityString(R.plurals.payment_due_days, period.days, period.days)
+                    else -> resources.getString(R.string.payment_due_today)
             }
+
         }
 
         fun getContrastingColor(background: Int): Int {
@@ -138,7 +143,7 @@ class SubscriptionListAdapter(var subscriptions: List<Subscription>) :
     override fun onBindViewHolder(holder: SubscriptionViewHolder, position: Int) {
         val subscription = subscriptions[position]
         val isSelected = position == selectedItemPosition
-        holder.bind(subscription, isSelected)
+        holder.bind(subscription, isSelected, holder.itemView.resources)
     }
 
     override fun getItemCount(): Int {
